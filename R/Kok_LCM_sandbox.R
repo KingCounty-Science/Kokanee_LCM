@@ -85,8 +85,8 @@ for(i in 1:4)
   hat_df[i,"sum_spawn"] <- sum(hat_df[i,2:5], na.rm = TRUE)
 }
 
-hat_df
-nat_df
+round(hat_df)
+round(nat_df)
 #now that my seed years have started, I can start using the spawner totals to look forward and backwards into the future.
 
 
@@ -156,7 +156,7 @@ for(i in 5:(years-10))
   nat_spawners <- healthy_spawners - hat_spawners
   
   #percent female and fecundity
-  percent_female <-sample(x = percent_female_list, size = 1, replace = TRUE)
+  percent_female <- sample(x = percent_female_list, size = 1, replace = TRUE)
   
   if (healthy_spawners < fecundity_threshold) {
     fecundity = high_fecundity
