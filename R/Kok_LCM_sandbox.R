@@ -2,7 +2,7 @@
 # Script started by Rebekah Stiling, Bailey Keeler, and Jim Bower Spring 2024
 # This is the beginning of a Kokanee lifecycle model
 # rstiling@kingcounty.gov, bkeeler@kingcounty.gov
-#=== === === === === === === ====
+#=== === === === === === === ===
 
 #lists based on observations
 hat_egg_surv_list <-c(1, 1,1,1,1,.5,.8) #Jim estimate
@@ -32,29 +32,25 @@ runs = 2 # a run is going through the cycle for the number of years desired. how
 ## Create an empty matrix for filling in a loop 
 #natural fish df
 nat_df <- matrix(data = NA, nrow = years, ncol = 7)
-#rownames(nat_df) <- c("SPAWN_01", "SPAWN_02","SPAWN_03","SPAWN_04","SPAWN_05", "SPAWN_06", "SPAWN_07","SPAWN_08","SPAWN_09","SPAWN_10")
 colnames(nat_df) <- c("year","2yo", "3yo","4yo","5yo", "sum_spawn", "eggs")
 
 #hatchery fish df
 hat_df <- matrix(data = NA, nrow = years, ncol = 7)
-#rownames(hat_df) <- c("SPAWN_01", "SPAWN_02","SPAWN_03","SPAWN_04","SPAWN_05", "SPAWN_06", "SPAWN_07","SPAWN_08","SPAWN_09","SPAWN_10")
 colnames(hat_df) <- c("year", "2yo", "3yo","4yo","5yo", "sum_spawn", "eggs")
 
-## See about doing an if/else for i. If i<5, then we do n_nat eggs, if i>5, then we need spawning year.
-
-for(i in 1:years-4)
+for(i in 1:years-4) #because outputs are placed 2-5 years into the future, the loop needs to end 4 years prior to the last year/row of the matrix to avoid errors.
 {
   if(i < 5) { 
   #egg to fry ####
-  n_nat_eggs <- n_nat_eggs_start #For the first 4 years, the eggs are built from the seed numbers
+  n_nat_eggs <- n_nat_eggs_start #For the first 4 years, we use seed numbers for the eggs to estimate future spawners.
   n_hat_eggs <- n_hat_eggs_start
   } else {
-    n_nat_eggs  # but after that, the number of eggs is determined by that years spawner size
+    n_nat_eggs  # but after the first four years, the number of eggs is determined by the number of fish spawning
     n_hat_eggs 
   }
   
-  nat_egg_surv <- runif(n = 1, min = nat_egg_surv_min, max = nat_egg_surv_max) # event.metric
-  hat_egg_surv <- sample(x = hat_egg_surv_list, size = 1, replace = TRUE) # event.metric
+  nat_egg_surv <- runif(n = 1, min = nat_egg_surv_min, max = nat_egg_surv_max) # survival is pulled from a range of possibilities
+  hat_egg_surv <- sample(x = hat_egg_surv_list, size = 1, replace = TRUE) # hatch survival is pulled from a list of past events
   n_nat_fry <- n_nat_eggs*nat_egg_surv
   n_hat_fry <- n_hat_eggs*hat_egg_surv
   
@@ -90,9 +86,10 @@ for(i in 1:years-4)
   hat_df[i+4,"5yo"] <- n_hat_year_5_spawners
   hat_df[i,"sum_spawn"] <- sum(hat_df[i,2:5], na.rm = TRUE)
   
-  if(i < 5) { # this tells the code to return to the next iteration, don't do any more of the script. It only does this for iterations 1-4
-    next } else {
-
+  if(i < 5) { 
+    next } # this tells the code to go back to the top to the next iteration, don't do any more of the script. It only does this for iterations 1-4 while getting the first row full population of spawners established. Otherwise it carries on with the rest.
+  else 
+    {
   #total the spawners for the next round
   nat_spawners <- nat_df[i,"sum_spawn"]
 
@@ -124,16 +121,14 @@ for(i in 1:years-4)
   nat_female_spawners <- nat_spawners*percent_female
   n_nat_eggs_1 <-nat_female_spawners*fecundity
   
-  nat_df[i,"eggs"]<- n_nat_eggs_1
-  
-  n_nat_eggs <- n_nat_eggs_1
+  nat_df[i,"eggs"]<- n_nat_eggs_1 #store the number of eggs in the data frame
+  n_nat_eggs <- n_nat_eggs_1 # store the number of eggs as the name for starting the next iteration
   
   #hatchery spawners to eggs
   hat_female_spawners <- hat_spawners*percent_female
   n_hat_eggs_1 <-hat_female_spawners*fecundity
   
   hat_df[i,"eggs"]<- n_hat_eggs_1
-  
   n_hat_eggs <- n_hat_eggs_1
   
     }
