@@ -49,8 +49,8 @@ for(i in 1:years-4)
   n_nat_eggs <- n_nat_eggs_start #For the first 4 years, the eggs are built from the seed numbers
   n_hat_eggs <- n_hat_eggs_start
   } else {
-    n_nat_eggs <- n_nat_eggs_1 # but after that, the number of eggs is determined by that years spawner size
-    n_hat_eggs <- n_hat_eggs_1
+    n_nat_eggs  # but after that, the number of eggs is determined by that years spawner size
+    n_hat_eggs 
   }
   
   nat_egg_surv <- runif(n = 1, min = nat_egg_surv_min, max = nat_egg_surv_max) # event.metric
@@ -90,7 +90,7 @@ for(i in 1:years-4)
   hat_df[i+4,"5yo"] <- n_hat_year_5_spawners
   hat_df[i,"sum_spawn"] <- sum(hat_df[i,2:5], na.rm = TRUE)
   
-  if(i < 5) { # this tells the code to return to the next iteration, don't do any more of the loop.
+  if(i < 5) { # this tells the code to return to the next iteration, don't do any more of the script. It only does this for iterations 1-4
     next } else {
 
   #total the spawners for the next round
@@ -139,20 +139,13 @@ for(i in 1:years-4)
     }
 }
     
-
-hat_df
-nat_df
-
-# Plot #####
-plot(x = nat_df[,1], y = nat_df[,6])
-
-plot(x = hat_df[,1], y = hat_df[,6])
-
 # Plot #####
 par(mfrow=c(2,2)) # Change the panel layout to 2 x 2
-
-plot(x = (nat_df[-(1:4),1])-4, y = nat_df[-(1:4),"eggs"])
-
-plot(x = (hat_df[-(1:4),1])-4, y = hat_df[-(1:4),"eggs"])
-
+plot(x = nat_df[5:95,1], y = nat_df[5:95,"sum_spawn"])
+plot(x = hat_df[5:95,1], y = hat_df[5:95,"sum_spawn"])
+plot(x = (nat_df[-(1:4),"year"])-4, y = nat_df[-(1:4),"eggs"])
+plot(x = (hat_df[-(1:4),"year"])-4, y = hat_df[-(1:4),"eggs"])
 par(mfrow=c(1,1)) # Change back to 1 x 1
+
+round(nat_df)
+round(hat_df)
