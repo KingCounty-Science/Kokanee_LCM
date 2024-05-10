@@ -31,22 +31,28 @@ runs = 2 # a run is going through the cycle for the number of years desired. how
 
 ## Create an empty matrix for filling in a loop 
 #natural fish df
-nat_df <- matrix(data = NA, nrow = years, ncol = 6)
+nat_df <- matrix(data = NA, nrow = years, ncol = 7)
 #rownames(nat_df) <- c("SPAWN_01", "SPAWN_02","SPAWN_03","SPAWN_04","SPAWN_05", "SPAWN_06", "SPAWN_07","SPAWN_08","SPAWN_09","SPAWN_10")
-colnames(nat_df) <- c("year","2yo", "3yo","4yo","5yo", "sum_spawn")
+colnames(nat_df) <- c("year","2yo", "3yo","4yo","5yo", "sum_spawn", "eggs")
 
 #hatchery fish df
-hat_df <- matrix(data = NA, nrow = years, ncol = 6)
+hat_df <- matrix(data = NA, nrow = years, ncol = 7)
 #rownames(hat_df) <- c("SPAWN_01", "SPAWN_02","SPAWN_03","SPAWN_04","SPAWN_05", "SPAWN_06", "SPAWN_07","SPAWN_08","SPAWN_09","SPAWN_10")
-colnames(hat_df) <- c("year", "2yo", "3yo","4yo","5yo", "sum_spawn")
+colnames(hat_df) <- c("year", "2yo", "3yo","4yo","5yo", "sum_spawn", "eggs")
 
 ## See about doing an if/else for i. If i<5, then we do n_nat eggs, if i>5, then we need spawning year.
 
-for(i in 1:4)
+for(i in 1:years-4)
 {
+  if(i < 5) { 
   #egg to fry ####
-  n_nat_eggs <- n_nat_eggs_start
+  n_nat_eggs <- n_nat_eggs_start #For the first 4 years, the eggs are built from the seed numbers
   n_hat_eggs <- n_hat_eggs_start
+  } else {
+    n_nat_eggs <- n_nat_eggs_1 # but after that, the number of eggs is determined by that years spawner size
+    n_hat_eggs <- n_hat_eggs_1
+  }
+  
   nat_egg_surv <- runif(n = 1, min = nat_egg_surv_min, max = nat_egg_surv_max) # event.metric
   hat_egg_surv <- sample(x = hat_egg_surv_list, size = 1, replace = TRUE) # event.metric
   n_nat_fry <- n_nat_eggs*nat_egg_surv
@@ -68,7 +74,7 @@ for(i in 1:4)
   nat_df[i+3,"4yo"] <- n_nat_year_4_spawners
   nat_df[i+4,"5yo"] <- n_nat_year_5_spawners
   nat_df[i,"sum_spawn"] <- sum(nat_df[i,2:5], na.rm = TRUE)
-  
+
   ## hatchery fish ####
   n_hat_spawner <- n_hat_fry*hat_fry_to_spawn_survival
   
@@ -83,59 +89,13 @@ for(i in 1:4)
   hat_df[i+3,"4yo"] <- n_hat_year_4_spawners
   hat_df[i+4,"5yo"] <- n_hat_year_5_spawners
   hat_df[i,"sum_spawn"] <- sum(hat_df[i,2:5], na.rm = TRUE)
-}
+  
+  if(i < 5) { # this tells the code to return to the next iteration, don't do any more of the loop.
+    next } else {
 
-round(hat_df)
-round(nat_df)
-#now that my seed years have started, I can start using the spawner totals to look forward and backwards into the future.
-
-
-
-for(i in 5:(years-10))
-{
-  #egg to fry ####
-  n_nat_eggs #This is still stored in memory from previous loop
-  n_hat_eggs #This is still stored in memory from previous loop
-  nat_egg_surv <- runif(n = 1, min = nat_egg_surv_min, max = nat_egg_surv_max) # event.metric
-  hat_egg_surv <- sample(x = hat_egg_surv_list, size = 1, replace = TRUE) # event.metric
-  n_nat_fry <- n_nat_eggs*nat_egg_surv
-  n_hat_fry <- n_hat_eggs*hat_egg_surv
-  
-  #fry to lake survival to transition to spawner by ages ####
-  
-  ## natural org fish ####
-  n_nat_spawner <- n_nat_fry*nat_fry_to_spawn_survival
-  
-  n_nat_year_2_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[1]
-  n_nat_year_3_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[2]
-  n_nat_year_4_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[3]
-  n_nat_year_5_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[4]
-  
-  nat_df[i,"year"] <- i
-  nat_df[i+1,"2yo"] <- n_nat_year_2_spawners
-  nat_df[i+2,"3yo"] <- n_nat_year_3_spawners
-  nat_df[i+3,"4yo"] <- n_nat_year_4_spawners
-  nat_df[i+4,"5yo"] <- n_nat_year_5_spawners
-  nat_df[i,"sum_spawn"] <- sum(nat_df[i,2:5])
-  
   #total the spawners for the next round
-  nat_spawners <- nat_df[i,"sum_spawn"] 
-  
-  ## hatchery fish ####
-  n_hat_spawner <- n_hat_fry*hat_fry_to_spawn_survival
-  
-  n_hat_year_2_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[1]
-  n_hat_year_3_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[2]
-  n_hat_year_4_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[3]
-  n_hat_year_5_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[4]
-  
-  hat_df[i,"year"] <- i
-  hat_df[i+1,"2yo"] <- n_hat_year_2_spawners
-  hat_df[i+2,"3yo"] <- n_hat_year_3_spawners
-  hat_df[i+3,"4yo"] <- n_hat_year_4_spawners
-  hat_df[i+4,"5yo"] <- n_hat_year_5_spawners
-  hat_df[i,"sum_spawn"] <- sum(hat_df[i,2:5])
-  
+  nat_spawners <- nat_df[i,"sum_spawn"]
+
   #total the spawners for the next round
   hat_spawners <- hat_df[i,"sum_spawn"]
   
@@ -148,8 +108,6 @@ for(i in 5:(years-10))
   if (healthy_spawners < max_num_spawners) {
     portion_spawner_to_hatch = portion_spawner_to_hatch_low_year
   } else {(portion_spawner_to_hatch = portion_spawner_to_hatch_high_year) }
-  
-  portion_spawner_to_hatch
   
   ## spawners -split into portions to use later ####
   hat_spawners <- portion_spawner_to_hatch * healthy_spawners 
@@ -165,15 +123,22 @@ for(i in 5:(years-10))
   #natural spawners to eggs
   nat_female_spawners <- nat_spawners*percent_female
   n_nat_eggs_1 <-nat_female_spawners*fecundity
+  
+  nat_df[i,"eggs"]<- n_nat_eggs_1
+  
   n_nat_eggs <- n_nat_eggs_1
   
   #hatchery spawners to eggs
   hat_female_spawners <- hat_spawners*percent_female
   n_hat_eggs_1 <-hat_female_spawners*fecundity
+  
+  hat_df[i,"eggs"]<- n_hat_eggs_1
+  
   n_hat_eggs <- n_hat_eggs_1
- 
-   
+  
+    }
 }
+    
 
 hat_df
 nat_df
@@ -182,3 +147,12 @@ nat_df
 plot(x = nat_df[,1], y = nat_df[,6])
 
 plot(x = hat_df[,1], y = hat_df[,6])
+
+# Plot #####
+par(mfrow=c(2,2)) # Change the panel layout to 2 x 2
+
+plot(x = (nat_df[-(1:4),1])-4, y = nat_df[-(1:4),"eggs"])
+
+plot(x = (hat_df[-(1:4),1])-4, y = hat_df[-(1:4),"eggs"])
+
+par(mfrow=c(1,1)) # Change back to 1 x 1
