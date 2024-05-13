@@ -136,10 +136,10 @@ for(i in 1:years-4) #because outputs are placed 2-5 years into the future, the l
     
 # Plot #####
 par(mfrow=c(2,2)) # Change the panel layout to 2 x 2
-plot(x = nat_df[5:95,1], y = nat_df[5:95,"sum_spawn"])
-plot(x = hat_df[5:95,1], y = hat_df[5:95,"sum_spawn"])
-plot(x = (nat_df[-(1:4),"year"])-4, y = nat_df[-(1:4),"eggs"])
-plot(x = (hat_df[-(1:4),"year"])-4, y = hat_df[-(1:4),"eggs"])
+plot(x = nat_df[5:95,1], y = nat_df[5:95,"sum_spawn"], xlab = "years", ylab = "natural spawners")
+plot(x = hat_df[5:95,1], y = hat_df[5:95,"sum_spawn"], xlab = "years", ylab = "hatchery spawners")
+plot(x = (nat_df[-(1:4),"year"])-4, y = nat_df[-(1:4),"eggs"], xlab = "years", ylab = "natural eggs")
+plot(x = (hat_df[-(1:4),"year"])-4, y = hat_df[-(1:4),"eggs"], xlab = "years", ylab = "hatchery eggs")
 par(mfrow=c(1,1)) # Change back to 1 x 1
 
 round(nat_df)
