@@ -5,7 +5,7 @@
 #=== === === === === === === ===
 
 #lists based on observations
-hat_egg_surv_list <-c(1, 1,1,1,1,.5,.8) #Jim estimate
+hat_egg_surv_list <-c(.9, .9, .9, .9, .9, .5, .8) #Jim estimate. Want to change 1s to .9s?
 percent_female_list <-c(0.29, 0.28, 0.49, 0.26, 0.39, 0.41, 0.34 ,0.36, 0.30, 0.32, 0.37, 0.34) #spreadsheet
 nat_egg_surv_min <- 0.015 #lower bound of 95% CI #0.015
 nat_egg_surv_max <- 0.176 #upper bound of 95% CI #0.176
@@ -26,7 +26,7 @@ fecundity_threshold = 1000 #if over this number, then average fecundity is lower
 high_fecundity = 1200
 low_fecundity = 900
 
-years = 150 #how many years would we like to run the model
+years = 50 #how many years would we like to run the model
 runs = 50 # a run is going through the cycle for the number of years desired. how many runs do we do Goal: 1000
 
 grand_df <- matrix(data = NA, nrow = years, ncol = runs+1)
@@ -149,7 +149,7 @@ if (j == 1) {
        y = grand_df[5:(years-4),j+1], type = "l",
        xlab = "years", 
        ylab = "healthy spawners",
-       ylim = c(0, 1000),
+       ylim = c(0, 600),
        col = "gray") 
 } else { 
   lines(x = grand_df[5:(years-4),1],
