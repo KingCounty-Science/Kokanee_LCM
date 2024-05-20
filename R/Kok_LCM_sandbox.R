@@ -9,7 +9,7 @@ hat_egg_surv_list <-c(.9, .9, .9, .9, .9, .5, .8) #Jim estimate. Want to change 
 percent_female_list <-c(0.29, 0.28, 0.49, 0.26, 0.39, 0.41, 0.34 ,0.36, 0.30, 0.32, 0.37, 0.34) #spreadsheet
 nat_egg_surv_min <- 0.015 #lower bound of 95% CI #0.015
 nat_egg_surv_max <- 0.176 #upper bound of 95% CI #0.176
-n_nat_eggs_start <- 120000
+n_nat_eggs_start <- 120000 #Estimate for how many eggs are available with 300 spawners
 n_hat_eggs_start <- 7500
 nat_fry_to_spawn_survival <- .0175 #.0175 #1.75% geometric mean from jim 2009-2018 
 hat_fry_to_spawn_survival <- .0005 #0.05% geometric mean from jim 2009-2018 
@@ -94,13 +94,14 @@ for(i in 1:years-4) #because outputs are placed 2-5 years into the future, the l
     next } # this tells the code to go back to the top to the next iteration, don't do any more of the script. It only does this for iterations 1-4 while getting the first row full population of spawners established. Otherwise it carries on with the rest.
   else 
     {
-  #total the spawners for the next round
+  #total the spawners returning for the next round
   nat_spawner_rets <- nat_df[i,"sum_spawn_rets"]
 
-  #total the spawners for the next round
+  #total the spawners returning for the next round
   hat_spawner_rets <- hat_df[i,"sum_spawn_rets"]
   
   # spawner to egg ####
+  #total spawners that returned
   total_spawners <- nat_spawner_rets + hat_spawner_rets
   
   # spawner loss to disease 
