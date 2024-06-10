@@ -11,11 +11,11 @@ nat_egg_surv_min <- 0.015 #lower bound of 95% CI #0.015
 nat_egg_surv_max <- 0.176 #upper bound of 95% CI #0.176
 n_nat_eggs_start <- 120000 #Estimate for how many eggs are available with 300 spawners
 n_hat_eggs_start <- 7500
-nat_fry_to_spawn_survival <- .0175 #.0175 #1.75% geometric mean from jim 2009-2018 
-hat_fry_to_spawn_survival <- .0005 #0.05% geometric mean from jim 2009-2018 
+nat_fry_to_spawn_survival <- .0197 #1.97% geometric mean from jim 2009-2019 updated 5/29/24
+hat_fry_to_spawn_survival <- .0006 #0.06% geometric mean from jim 2009-2019 updated 5/29/24
 # nat_brood_to_spawn_2 <- c(.04, 0.03, 0.05) prep to build randomness in the future
-portion_nat_brood_to_spawn_age <- c(.0434, .7405, .2123, .0038) #average values for a composition that sums to 1, to estimate the percent of brood that later returned as spawners from 2009-2018
-portion_hat_brood_to_spawn_age <- c(.0782, .8842, .0376, 0) 
+portion_nat_brood_to_spawn_age <- c(.0596, .6818, .2552, .0034) #average values for a composition that sums to 1, to estimate the percent of brood that later returned as spawners from 2009-2019. updated 5/29/24
+portion_hat_brood_to_spawn_age <- c(.1091, .7757, .1151, 0) #updated 5/29/24
 
 portion_spawner_to_hatch = NA
 max_num_spawners = 300
@@ -27,7 +27,7 @@ high_fecundity = 1200
 low_fecundity = 900
 
 years = 50 #how many years would we like to run the model
-runs = 100 # a run is going through the cycle for the number of years desired. how many runs do we do Goal: 1000
+runs = 1000 # a run is going through the cycle for the number of years desired. how many runs do we do Goal: 1000
 
 grand_df <- matrix(data = NA, nrow = years+4, ncol = runs+1) #because outputs are placed 2-5 years into the future, the loop needs to extend 4 years past the desired length so future predicions have a place to go. 
 
@@ -151,7 +151,7 @@ if (j == 1) {
        y = grand_df[5:(years),j+1], type = "l",
        xlab = "years", 
        ylab = "healthy spawners",
-       ylim = c(0, 1000),
+       ylim = c(0, 600),
        col = "gray") 
 } else { 
   lines(x = grand_df[5:(years),1],
