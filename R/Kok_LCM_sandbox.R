@@ -29,20 +29,21 @@ low_fecundity = 900
 years = 50 #how many years would we like to run the model
 runs = 50 # a run is going through the cycle for the number of years desired. how many runs do we do Goal: 1000
 
-grand_df <- matrix(data = NA, nrow = years, ncol = runs+1)
-grand_df[,1] <- 1:years
+grand_df <- matrix(data = NA, nrow = years+4, ncol = runs+1) #because outputs are placed 2-5 years into the future, the loop needs to extend 4 years past the desired length so future predicions have a place to go. 
+
+grand_df[,1] <- 1:(years+4)
 
 for(j in 1:runs) {
 ## Create an empty matrix for filling in a loop 
 #natural fish df
-nat_df <- matrix(data = NA, nrow = years, ncol = 8)
+nat_df <- matrix(data = NA, nrow = years + 4, ncol = 8)
 colnames(nat_df) <- c("year","2yo", "3yo","4yo","5yo", "sum_spawn_rets", "sum_spawn", "eggs")
 
 #hatchery fish df
-hat_df <- matrix(data = NA, nrow = years, ncol = 8)
+hat_df <- matrix(data = NA, nrow = years + 4, ncol = 8)
 colnames(hat_df) <- c("year", "2yo", "3yo","4yo","5yo", "sum_spawn_rets", "sum_spawn", "eggs")
 
-for(i in 1:years-4) #because outputs are placed 2-5 years into the future, the loop needs to end 4 years prior to the last year/row of the matrix to avoid errors.
+for(i in 1:years) 
 {
   if(i < 5) { 
   #egg to fry ####
@@ -146,23 +147,23 @@ for(i in 1:years-4) #because outputs are placed 2-5 years into the future, the l
 }
 
 if (j == 1) {
-  plot(x = grand_df[5:(years-4),1], 
-       y = grand_df[5:(years-4),j+1], type = "l",
+  plot(x = grand_df[5:(years),1], 
+       y = grand_df[5:(years),j+1], type = "l",
        xlab = "years", 
        ylab = "healthy spawners",
        ylim = c(0, 600),
        col = "gray") 
 } else { 
-  lines(x = grand_df[5:(years-4),1],
-        y = grand_df[5:(years-4),1+j],
+  lines(x = grand_df[5:(years),1],
+        y = grand_df[5:(years),1+j],
         col= "gray")
 } 
 
 
 }  
 
-lines(x = grand_df[5:(years-4),1],
-      y = rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years-4)])
+lines(x = grand_df[5:(years),1],
+      y = rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)])
 
 
 #grand_df[i, j] 
