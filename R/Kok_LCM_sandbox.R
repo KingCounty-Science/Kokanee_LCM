@@ -4,6 +4,8 @@
 # rstiling@kingcounty.gov, bkeeler@kingcounty.gov
 #=== === === === === === === ===
 
+#List of scenarios
+
 #lists based on observations
 hat_egg_surv_list <-c(.9, .9, .9, .9, .9, .5, .8) #Jim estimate. changed 1s to .9 
 percent_female_list <-c(0.29, 0.28, 0.49, 0.26, 0.39, 0.41, 0.34 ,0.36, 0.30, 0.32, 0.37, 0.34) #spreadsheet
