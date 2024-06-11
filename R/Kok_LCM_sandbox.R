@@ -11,16 +11,16 @@ nat_egg_surv_min <- 0.015 #lower bound of 95% CI #0.015
 nat_egg_surv_max <- 0.176 #upper bound of 95% CI #0.176
 n_nat_eggs_start <- 120000 #Estimate for how many eggs are available with 300 spawners
 n_hat_eggs_start <- 7500
-nat_fry_to_spawn_survival <- .0197 #1.97% geometric mean from jim 2009-2019 updated 5/29/24
-hat_fry_to_spawn_survival <- .0006 #0.06% geometric mean from jim 2009-2019 updated 5/29/24
+nat_fry_to_spawn_survival <- .0197 #1.97% geometric mean from jim 2009-2019 updated 6/10/24
+hat_fry_to_spawn_survival <- .0006 #0.06% geometric mean from jim 2009-2019 updated 6/10/24
 # nat_brood_to_spawn_2 <- c(.04, 0.03, 0.05) prep to build randomness in the future
 portion_nat_brood_to_spawn_age <- c(.0596, .6818, .2552, .0034) #average values for a composition that sums to 1, to estimate the percent of brood that later returned as spawners from 2009-2019. updated 5/29/24
-portion_hat_brood_to_spawn_age <- c(.1091, .7757, .1151, 0) #updated 5/29/24
+portion_hat_brood_to_spawn_age <- c(.1091, .7757, .1151, 0) #updated 6/10/24
 
 portion_spawner_to_hatch = NA
 max_num_spawners = 300
-portion_spawner_to_hatch_low_year = .1 
-portion_spawner_to_hatch_high_year= .05
+portion_spawner_to_hatch_low_year_list <- c(0, .05, .1, .15) #list probabilities to capture variability seen in data. Will randomly select from this list.  
+portion_spawner_to_hatch_high_year= .05 #when max_num_spawners >300, always pull 0.05 fish (5%). Jim pondering this to incorporate hatchery capacity. 
 loss_to_disease = 0 #write the number of portion lost 
 fecundity_threshold = 1000 #if over this number, then average fecundity is lower
 high_fecundity = 1200
@@ -108,6 +108,8 @@ for(i in 1:years)
   # spawner loss to disease 
   healthy_spawners = total_spawners*(1-loss_to_disease)
   
+  portion_spawner_to_hatch_low_year <- sample(portion_spawner_to_hatch_low_year_list, replace = TRUE, size=1)
+  
   if (healthy_spawners < max_num_spawners) {
     portion_spawner_to_hatch = portion_spawner_to_hatch_low_year
   } else {(portion_spawner_to_hatch = portion_spawner_to_hatch_high_year) }
@@ -145,13 +147,13 @@ for(i in 1:years)
   grand_df[i, j+1] <- healthy_spawners
 
 }
-
+#plot based on manually set y-axis range
 if (j == 1) {
   plot(x = grand_df[5:(years),1], 
        y = grand_df[5:(years),j+1], type = "l",
        xlab = "years", 
        ylab = "healthy spawners",
-       ylim = c(0, 600),
+       ylim = c(0, 1400),   #set y-axis manually here
        col = "gray") 
 } else { 
   lines(x = grand_df[5:(years),1],
@@ -165,6 +167,28 @@ if (j == 1) {
 lines(x = grand_df[5:(years),1],
       y = rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)])
 
+#establish top of range in data fram from model output 
+top_of_range <- max(grand_df, na.rm = TRUE)
+
+#plot based on model output range 
+plot(x = grand_df[5:nrow(grand_df)],
+     y = grand_df[5:nrow(grand_df),2],
+     type = "l",
+     xlab = "years", 
+     ylab = "healthy spawners",
+     ylim = c(0, top_of_range),
+     col = "gray")
+for(i in c(3:dim(grand_df)[2])){
+  lines(x = grand_df[5:nrow(grand_df)],
+        y = grand_df[5:nrow(grand_df), i],
+        col = "gray")
+}
+
+lines(x = grand_df[5:(years),1],
+      y = rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)])
+
+#prints range from grand_df (dataframe)
+range(grand_df [ , 2:years], na.rm=TRUE)
 
 #grand_df[i, j] 
 # plot(x = grand_df[5:(years-4),1], 
@@ -187,3 +211,5 @@ lines(x = grand_df[5:(years),1],
 
 round(nat_df)
 round(hat_df)
+
+
