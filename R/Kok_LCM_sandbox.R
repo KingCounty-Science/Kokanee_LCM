@@ -9,7 +9,9 @@ scenarios <- c("base", "scenario1","scenario2")
 years = 50 #how many years would we like to run the model
 runs = 1000 # a run is going through the cycle for the number of years desired. how many runs do we do Goal: 1000
 
-grander_df <- matrix(data = NA, nrow = years, ncol = length(scenarios)) #this is for storing the average output of each scenario
+#create a data frame that will store all the returner numbers
+grander_df <- matrix(data = NA, nrow = years, ncol = length(scenarios)+1) #this is for storing the average output of each scenario
+colnames(grander_df) <- c("year",scenarios) #name the columns
 
 grander_df[,1] <- 1:years #populate the first column of the df with the number of years, plus
   
@@ -168,10 +170,6 @@ for(i in 1:years)
 
 } # end i loop
 
-#save the grand_df
-grand_df_filename <- paste0("Output/mean_spawners_",scen, ".csv")
-write.csv(grand_df, grand_df_filename)
-
 #plot the data frame with 
 
 if (j == 1) {
@@ -193,9 +191,38 @@ if (j == 1) {
 lines(x = grand_df[5:(years),1],
       y = rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)])
 
-grander_df[5:(years),k] <- rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)]
+#plot and save data at the end ####
+
+top_of_range <- max(grand_df, na.rm = TRUE)
+
+plot(x = grand_df[5:nrow(grand_df)],
+     y = grand_df[5:nrow(grand_df),2],
+     type = "l",
+     xlab = "years", 
+     ylab = "healthy spawners",
+     ylim = c(0, top_of_range),
+     col = "gray")
+for(i in c(3:dim(grand_df)[2])){
+  lines(x = grand_df[5:nrow(grand_df)],
+        y = grand_df[5:nrow(grand_df), i],
+        col = "gray")
+}
+lines(x = grand_df[5:(years),1],
+      y = rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)])
+
+
+#save the grand_df
+grand_df_filename <- paste0("Output/mean_spawners_",scen, ".csv")
+write.csv(grand_df, grand_df_filename)
+
+grander_df[5:(years),k+1] <- rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)]
 
 } #end k loop
+
+#save the grander_df
+grander_df_filename <- paste0("Output/overview_mean_spawners.csv")
+write.csv(grander_df, grander_df_filename)
+
 
 #grand_df[i, j] 
 # plot(x = grand_df[5:(years-4),1], 
