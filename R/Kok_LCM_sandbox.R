@@ -10,10 +10,10 @@ years = 50 #how many years would we like to run the model
 runs = 1000 # a run is going through the cycle for the number of years desired. how many runs do we do Goal: 1000
 
 #create a data frame that will store all the returner numbers
-grander_df <- matrix(data = NA, nrow = years, ncol = length(scenarios)+1) #this is for storing the average output of each scenario
-colnames(grander_df) <- c("year",scenarios) #name the columns
+returner_df <- matrix(data = NA, nrow = years, ncol = length(scenarios)+1) #this is for storing the average output of each scenario
+colnames(returner_df) <- c("year",scenarios) #name the columns
 
-grander_df[,1] <- 1:years #populate the first column of the df with the number of years, plus
+returner_df[,1] <- 1:years #populate the first column of the df with the number of years, plus
   
 for(k in 1:length(scenarios)) {
     scen <- scenarios[k]
@@ -195,6 +195,12 @@ lines(x = grand_df[5:(years),1],
 
 top_of_range <- max(grand_df, na.rm = TRUE)
 
+grand_df_plot_filename <- paste0("Output/plot_mean_spawners_",scen, ".tiff")
+
+tiff(filename = grand_df_plot_filename, width = 6, height = 6, units = "in", pointsize = 10, res = 400, family = "sans", compression = "lzw")
+
+par(mar = c(5,5,2,2))
+
 plot(x = grand_df[5:nrow(grand_df)],
      y = grand_df[5:nrow(grand_df),2],
      type = "l",
@@ -210,18 +216,19 @@ for(i in c(3:dim(grand_df)[2])){
 lines(x = grand_df[5:(years),1],
       y = rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)])
 
+dev.off()
 
 #save the grand_df
 grand_df_filename <- paste0("Output/mean_spawners_",scen, ".csv")
 write.csv(grand_df, grand_df_filename)
 
-grander_df[5:(years),k+1] <- rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)]
+returner_df[5:(years),k+1] <- rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)]
 
 } #end k loop
 
-#save the grander_df
-grander_df_filename <- paste0("Output/overview_mean_spawners.csv")
-write.csv(grander_df, grander_df_filename)
+#save the returner_df
+returner_df_filename <- paste0("Output/overview_mean_spawners.csv")
+write.csv(returner_df, returner_df_filename)
 
 
 #grand_df[i, j] 
