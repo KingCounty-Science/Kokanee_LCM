@@ -20,7 +20,6 @@ for(k in 1:length(scenarios)) {
   
   #lists based on observations
   hat_egg_surv_list <-c(.9, .9, .9, .9, .9, .5, .8) #Jim estimate. changed 1s to .9 
-  percent_female_list <-c(0.29, 0.28, 0.49, 0.26, 0.39, 0.41, 0.34 ,0.36, 0.30, 0.32, 0.37, 0.34) #spreadsheet
   nat_egg_surv_min <- 0.015 #lower bound of 95% CI #0.015
   nat_egg_surv_max <- 0.176 #upper bound of 95% CI #0.176
   n_nat_eggs_start <- 120000 #Estimate for how many eggs are available with 300 spawners
@@ -35,6 +34,7 @@ for(k in 1:length(scenarios)) {
   max_num_spawners = 300
   portion_spawner_to_hatch_low_year_list <- c(0, .05, .1, .15) #list probabilities to capture variability seen in data. Will randomly select from this list.  
   portion_spawner_to_hatch_high_year= .05 #when max_num_spawners >300, always pull 0.05 fish (5%). Jim pondering this to incorporate hatchery capacity. 
+  percent_female_list <-c(0.29, 0.28, 0.49, 0.26, 0.39, 0.41, 0.34 ,0.36, 0.30, 0.32, 0.37, 0.34) #spreadsheet
   loss_to_disease = 0 #write the number of portion lost 
   fecundity_threshold = 1000 #if over this number, then average fecundity is lower
   high_fecundity = 1200
@@ -127,6 +127,7 @@ for(k in 1:length(scenarios)) {
         # spawner loss to disease 
         healthy_spawners = total_spawners*(1-loss_to_disease)
         
+        # determine what portion of spawners will go to the hatchery if it is a low return year
         portion_spawner_to_hatch_low_year <- sample(portion_spawner_to_hatch_low_year_list, replace = TRUE, size=1)
         
         if (healthy_spawners < max_num_spawners) {
