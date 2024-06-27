@@ -5,7 +5,7 @@
 #=== === === === === === === ===
 
 #List of scenarios
-scenarios <- c("sc1", "sc2","sc3")
+scenarios <- c("sc1", "sc2.1", "sc2.2")
 years = 50 #how many years would we like to run the model
 runs = 1000 # a run is going through the cycle for the number of years desired. how many runs do we do Goal: 1000
 
@@ -39,6 +39,14 @@ loss_to_disease = 0 #write the number of portion lost
 fecundity_threshold = 1000 #if over this number, then average fecundity is lower
 high_fecundity = 1200
 low_fecundity = 900
+
+if (scen == "sc2.1") {
+  hat_fry_to_spawn_survival <- .0197 #as the numeric value for hatchery-only fry to adult survival (show improved lake survival rate for hatchery fry : adult equal to natural fry : adult survival rate). 
+} 
+
+if (scen == "sc2.2"){
+  hat_fry_to_spawn_survival <- .0394 # the as the numeric value for hatchery-only fry to adult survival (show improved lake survival rate for hatchery fry : adult double the natural fry : adult survival rate). 
+} 
 
 grand_df <- matrix(data = NA, nrow = years+4, ncol = runs+1) #because outputs are placed 2-5 years into the future, the loop needs to extend 4 years past the desired length so future predicions have a place to go. 
 
