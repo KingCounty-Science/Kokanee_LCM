@@ -4,6 +4,20 @@
 # rstiling@kingcounty.gov, bkeeler@kingcounty.gov
 #=== === === === === === === ===
 
+#List of scenarios
+scenarios <- c("sc1", "sc2","sc3")
+years = 50 #how many years would we like to run the model
+runs = 1000 # a run is going through the cycle for the number of years desired. how many runs do we do Goal: 1000
+
+#create a data frame that will store all the returner numbers
+returner_df <- matrix(data = NA, nrow = years, ncol = length(scenarios)+1) #this is for storing the average output of each scenario
+colnames(returner_df) <- c("year",scenarios) #name the columns
+
+returner_df[,1] <- 1:years #populate the first column of the df with the number of years, plus
+
+for(k in 1:length(scenarios)) {
+  scen <- scenarios[k]
+
 #lists based on observations
 hat_egg_surv_list <-c(.9, .9, .9, .9, .9, .5, .8) #Jim estimate. changed 1s to .9 
 percent_female_list <-c(0.29, 0.28, 0.49, 0.26, 0.39, 0.41, 0.34 ,0.36, 0.30, 0.32, 0.37, 0.34) #spreadsheet
@@ -25,9 +39,6 @@ loss_to_disease = 0 #write the number of portion lost
 fecundity_threshold = 1000 #if over this number, then average fecundity is lower
 high_fecundity = 1200
 low_fecundity = 900
-
-years = 50 #how many years would we like to run the model
-runs = 1000 # a run is going through the cycle for the number of years desired. how many runs do we do Goal: 1000
 
 grand_df <- matrix(data = NA, nrow = years+4, ncol = runs+1) #because outputs are placed 2-5 years into the future, the loop needs to extend 4 years past the desired length so future predicions have a place to go. 
 
@@ -146,7 +157,8 @@ for(i in 1:years)
 
   grand_df[i, j+1] <- healthy_spawners
 
-}
+} #end i loop
+
 #plot based on manually set y-axis range
 if (j == 1) {
   plot(x = grand_df[5:(years),1], 
@@ -162,13 +174,18 @@ if (j == 1) {
 } 
 
 
-}  
+}  #end j loop
 
 lines(x = grand_df[5:(years),1],
       y = rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)])
 
 #establish top of range in data fram from model output 
 top_of_range <- max(grand_df, na.rm = TRUE)
+
+grand_df_plot_filename <- paste0("Output/plot_mean_spawners_",scen, ".tiff")
+tiff(filename = grand_df_plot_filename, width = 6, height = 6, units = "in", pointsize = 10, res = 400, family = "sans", compression = "lzw")
+
+par(mar = c(5,5,2,2))
 
 #plot based on model output range 
 plot(x = grand_df[5:nrow(grand_df)],
@@ -187,29 +204,17 @@ for(i in c(3:dim(grand_df)[2])){
 lines(x = grand_df[5:(years),1],
       y = rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)])
 
-#prints range from grand_df (dataframe)
-range(grand_df [ , 2:years], na.rm=TRUE)
+dev.off()
 
-#grand_df[i, j] 
-# plot(x = grand_df[5:(years-4),1], 
-#      y = grand_df[5:(years-4),2], type = "l") 
-# lines(grand_df[5:(years-4),1],
-#       y = grand_df[5:(years-4),3])
-# lines(grand_df[5:(years-4),1],
-#       y = grand_df[5:(years-4),4])
+#save the grand_df
+grand_df_filename <- paste0("Output/mean_spawners_",scen, ".csv")
+write.csv(grand_df, grand_df_filename)
 
+returner_df[5:(years),k+1] <- rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)]
 
+} #end k loop
 
-# 
-# # Plot last iteration #####
-# par(mfrow=c(2,2)) # Change the panel layout to 2 x 2
-# plot(x = nat_df[5:(years-5),1], y = nat_df[5:(years-5),"sum_spawn"], xlab = "years", ylab = "natural spawners")
-# plot(x = hat_df[5:(years-5),1], y = hat_df[5:(years-5),"sum_spawn"], xlab = "years", ylab = "hatchery spawners")
-# plot(x = (nat_df[-(1:4),"year"])-4, y = nat_df[-(1:4),"eggs"], xlab = "years", ylab = "natural eggs")
-# plot(x = (hat_df[-(1:4),"year"])-4, y = hat_df[-(1:4),"eggs"], xlab = "years", ylab = "hatchery eggs")
-# par(mfrow=c(1,1)) # Change back to 1 x 1
-
-round(nat_df)
-round(hat_df)
-
+#save the returner_df
+returner_df_filename <- paste0("Output/overview_mean_spawners.csv")
+write.csv(returner_df, returner_df_filename)
 
