@@ -226,3 +226,26 @@ returner_df[5:(years),k+1] <- rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)]
 returner_df_filename <- paste0("Output/overview_mean_spawners.csv")
 write.csv(returner_df, returner_df_filename)
 
+#establish top of range in data fram from model output 
+top_of_range_returner <- max(returner_df, na.rm = TRUE)
+
+tiff(filename = "Output/returner_runs.tiff", width = 6, height = 6, units = "in", pointsize = 10, res = 400, family = "sans", compression = "lzw")
+
+par(mar = c(5,5,2,2))
+
+#plot based on model output range 
+plot(x = returner_df[5:nrow(returner_df)],
+     y = returner_df[5:nrow(returner_df),2],
+     type = "l",
+     xlab = "years", 
+     ylab = "healthy spawners",
+     ylim = c(0, top_of_range_returner),
+     col = "gray")
+for(i in c(3:dim(returner_df)[2])){
+  lines(x = returner_df[5:nrow(returner_df)],
+        y = returner_df[5:nrow(returner_df), i],
+        col = "gray")
+}
+
+
+dev.off()
