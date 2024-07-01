@@ -10,7 +10,7 @@ years = 50 #how many years would we like to run the model
 runs = 1000 # a run is going through the cycle for the number of years desired. how many runs do we do Goal: 1000
 
 #create a data frame that will store all the returner numbers
-returner_df <- matrix(data = NA, nrow = years, ncol = length(scenarios)+1) #this is for storing the average output of each scenario
+returner_df <- matrix(data = NA, nrow = years, ncol = length(scenarios)+1) #this is for storing the average output of each scenario, the +1 allows for a col named "years"
 colnames(returner_df) <- c("year",scenarios) #name the columns
 
 returner_df[,1] <- 1:years #populate the first column of the df with the number of years, plus
@@ -48,7 +48,7 @@ for(k in 1:length(scenarios)) {
     hat_fry_to_spawn_survival <- .0394 # the as the numeric value for hatchery-only fry to adult survival (show improved lake survival rate for hatchery fry : adult double the natural fry : adult survival rate). 
   } 
   
-  grand_df <- matrix(data = NA, nrow = years+4, ncol = runs+1) #because outputs are placed 2-5 years into the future, the loop needs to extend 4 years past the desired length so future predicions have a place to go. 
+  grand_df <- matrix(data = NA, nrow = years+4, ncol = runs+1) #because outputs are placed 2-5 years into the future, the loop needs to extend 4 years past the desired length so future predictions have a location on the matrix to go. Without these extra rows the model gets an error towards the last year.
   
   grand_df[,1] <- 1:(years+4)
   
