@@ -272,7 +272,7 @@ tiff(filename = "Output/returner_runs.tiff", width = 6, height = 6, units = "in"
 par(mar = c(5,5,2,2))
 
 #plot based on model output range 
-plot(x = returner_df[5:nrow(returner_df)],
+plot(x = returner_df[5:nrow(returner_df), 1],
      y = returner_df[5:nrow(returner_df),2],
      type = "l",
      xlab = "years", 
@@ -280,7 +280,7 @@ plot(x = returner_df[5:nrow(returner_df)],
      ylim = c(0, top_of_range_returner),
      col = "gray")
 for(i in c(3:dim(returner_df)[2])){
-  lines(x = returner_df[5:nrow(returner_df)],
+  lines(x = returner_df[5:nrow(returner_df), 1],
         y = returner_df[5:nrow(returner_df), i],
         col = "gray")
 }
