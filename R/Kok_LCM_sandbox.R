@@ -5,7 +5,12 @@
 #=== === === === === === === ===
 
 #List of scenarios
-scenarios <- c("sc1", "sc2.1", "sc2.2")
+scenarios <- c("sc1.0", 
+               "sc2.1", "sc2.2", "sc2.3", 
+               "sc3.1", "sc3.2", 
+               "sc4.1", "sc4.2",
+               "sc5.1", "sc5.2",
+               "A", "B", "C", "D", "E")
 years = 50 #how many years would we like to run the model
 runs = 1000 # a run is going through the cycle for the number of years desired. how many runs do we do Goal: 1000
 
@@ -18,7 +23,7 @@ returner_df[,1] <- 1:years #populate the first column of the df with the number 
 for(k in 1:length(scenarios)) {
   scen <- scenarios[k]
   
-  #lists based on observations
+  #lists based on observations ####
   hat_egg_surv_list <-c(.9, .9, .9, .9, .9, .5, .8) #Jim estimate. changed 1s to .9 
   nat_egg_surv_min <- 0.015 #lower bound of 95% CI #0.015
   nat_egg_surv_max <- 0.176 #upper bound of 95% CI #0.176
@@ -32,6 +37,7 @@ for(k in 1:length(scenarios)) {
   
   portion_spawner_to_hatch = NA
   max_num_spawners = 300
+  carry_capacity = 22500
   portion_spawner_to_hatch_low_year_list <- c(0, .05, .1, .15) #list probabilities to capture variability seen in data. Will randomly select from this list.  
   portion_spawner_to_hatch_high_year= .05 #when max_num_spawners >300, always pull 0.05 fish (5%). Jim pondering this to incorporate hatchery capacity. 
   percent_female_list <-c(0.29, 0.28, 0.49, 0.26, 0.39, 0.41, 0.34 ,0.36, 0.30, 0.32, 0.37, 0.34) #spreadsheet
@@ -40,13 +46,38 @@ for(k in 1:length(scenarios)) {
   high_fecundity = 1200
   low_fecundity = 900
   
-  if (scen == "sc2.1") {
-    hat_fry_to_spawn_survival <- .0197 #as the numeric value for hatchery-only fry to adult survival (show improved lake survival rate for hatchery fry : adult equal to natural fry : adult survival rate). 
+  ## alterations due to scenarios ####
+  if (scen == "sc2.1" | scen == "A" | scen == "B" | scen == "C"  ) {
+    hat_fry_to_spawn_survival <- nat_fry_to_spawn_survival #as the numeric value for hatchery-only fry to adult survival (show improved lake survival rate for hatchery fry : adult equal to natural fry : adult survival rate). 
   } 
-  
   if (scen == "sc2.2"){
-    hat_fry_to_spawn_survival <- .0394 # the as the numeric value for hatchery-only fry to adult survival (show improved lake survival rate for hatchery fry : adult double the natural fry : adult survival rate). 
+    hat_fry_to_spawn_survival <- nat_fry_to_spawn_survival*.5 # the as the numeric value for hatchery-only fry to adult survival (show improved lake survival rate for hatchery fry : adult half the natural fry : adult survival rate). 
+  }   
+  if (scen == "sc2.3"){
+    hat_fry_to_spawn_survival <- nat_fry_to_spawn_survival*2 # the as the numeric value for hatchery-only fry to adult survival (show improved lake survival rate for hatchery fry : adult double the natural fry : adult survival rate). 
   } 
+  if (scen == "sc3.1"| scen == "A" | scen == "D"| scen == "E"  ){
+    portion_spawner_to_hatch_low_year_list <- portion_spawner_to_hatch_low_year_list*2 # double values in the list compared to sc1.0; keep zero
+    portion_spawner_to_hatch_high_year= portion_spawner_to_hatch_high_year*2 #double value to .1 
+  }
+  if (scen == "sc3.2"){
+    portion_spawner_to_hatch_low_year_list <- portion_spawner_to_hatch_low_year_list*3 # triple values in the list compared to sc1.0; keep zero
+    portion_spawner_to_hatch_high_year= portion_spawner_to_hatch_high_year*3 #triple value to .15 
+  }
+  if (scen == "sc4.1"| scen == "B" | scen == "D" | scen == "F"  ){
+    nat_egg_surv_min <- nat_egg_surv_min + 0.02 #increase survival by + 2%
+    nat_egg_surv_max <- nat_egg_surv_max + 0.02 #increase survival by + 2%
+  }
+  if (scen == "sc4.2"){
+    nat_egg_surv_min <- nat_egg_surv_min + 0.04 #increase survival by + 4%
+    nat_egg_surv_max <- nat_egg_surv_max + 0.04 #increase survival by + 4%
+  }
+  if (scen == "sc5.1"| scen == "C"| scen == "E" | scen == "F" ){
+    nat_fry_to_spawn_survival <- nat_fry_to_spawn_survival*2 #doubling status quo natural fry to adult survival
+  }
+  if (scen == "sc5.2"){
+    nat_fry_to_spawn_survival <- nat_fry_to_spawn_survival*3 #triple status quo natural fry to adult survival
+  }
   
   grand_df <- matrix(data = NA, nrow = years+4, ncol = runs+1) #because outputs are placed 2-5 years into the future, the loop needs to extend 4 years past the desired length so future predictions have a location on the matrix to go. Without these extra rows the model gets an error towards the last year.
   
@@ -80,7 +111,7 @@ for(k in 1:length(scenarios)) {
       
       #fry to lake survival to transition to spawner by ages ####
       
-      ## natural org fish ####
+      ## natural org fish fry to spawn ####
       n_nat_spawner <- n_nat_fry*nat_fry_to_spawn_survival
       
       n_nat_year_2_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[1]
@@ -95,7 +126,7 @@ for(k in 1:length(scenarios)) {
       nat_df[i+4,"5yo"] <- n_nat_year_5_spawners
       nat_df[i,"sum_spawn_rets"] <- sum(nat_df[i,2:5], na.rm = TRUE)
       
-      ## hatchery fish ####
+      ## hatchery fish fry to spawn ####
       n_hat_spawner <- n_hat_fry*hat_fry_to_spawn_survival
       
       n_hat_year_2_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[1]
@@ -123,6 +154,11 @@ for(k in 1:length(scenarios)) {
         # spawner to egg ####
         #total spawners that returned
         total_spawners <- nat_spawner_rets + hat_spawner_rets
+        
+        #carrying capacity ####
+        if (total_spawners > carry_capacity) {
+          total_spawners <- carry_capacity
+        }
         
         # spawner loss to disease 
         healthy_spawners = total_spawners*(1-loss_to_disease)
@@ -250,3 +286,4 @@ for(i in c(3:dim(returner_df)[2])){
 
 
 dev.off()
+
