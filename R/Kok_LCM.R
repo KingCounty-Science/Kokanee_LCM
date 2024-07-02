@@ -1,8 +1,9 @@
 #=== === === === === === === ===
 # Script started by Rebekah Stiling, Bailey Keeler, and Jim Bower Spring 2024
-# This is the beginning of a Kokanee lifecycle model
+# This is the Kokanee lifecycle model it goes through a status quo cycle then builds on that with addtional scenarios informed by managment goals
 # rstiling@kingcounty.gov, bkeeler@kingcounty.gov
 #=== === === === === === === ===
+
 
 #List of scenarios
 scenarios <- c("sc1.0", 
