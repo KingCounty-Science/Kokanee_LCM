@@ -38,7 +38,7 @@ for(k in 1:length(scenarios)) {
   
   portion_spawner_to_hatch = NA
   max_num_spawners = 300
-  carry_capacity = 22500
+  maximum_spawner_capacity = 22500
   portion_spawner_to_hatch_low_year_list <- c(0, .05, .1, .15) #list probabilities to capture variability seen in data. Will randomly select from this list.  
   portion_spawner_to_hatch_high_year= .05 #when max_num_spawners >300, always pull 0.05 fish (5%). Jim pondering this to incorporate hatchery capacity. 
   percent_female_list <-c(0.29, 0.28, 0.49, 0.26, 0.39, 0.41, 0.34 ,0.36, 0.30, 0.32, 0.37, 0.34) #spreadsheet
@@ -156,9 +156,9 @@ for(k in 1:length(scenarios)) {
         #total spawners that returned
         total_spawners <- nat_spawner_rets + hat_spawner_rets
         
-        #carrying capacity ####
-        if (total_spawners > carry_capacity) {
-          total_spawners <- carry_capacity
+        #maxium number of spawners the system is capable of holding ####
+        if (total_spawners > maximum_spawner_capacity) {
+          total_spawners <- maximum_spawner_capacity
         }
         
         # spawner loss to disease 
