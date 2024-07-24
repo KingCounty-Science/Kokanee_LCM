@@ -12,6 +12,14 @@ scenarios <- c("sc1.0",
                "sc4.1", "sc4.2",
                "sc5.1", "sc5.2",
                "A", "B", "C", "D", "E")
+
+#lists of estimated percent of NAT brood that returns as different spawning ages
+portion_nat_brood_to_spawn_age_INPUT <- list(a= c(0, .563, .437, 0), b= c(0, .999, .001, 0), c= c(0.000,	0.545, 0.455, 0.000), d= c(0.000,	0.480, 0.520, 0.000), e= c(0.035,	0.955, 0.010, 0.000), f= c(0.338,	0.584, 0.078,	0.000), g= c(0.000,	1.000, 0.000,	0.000), h= c(0.006,	0.716, 0.278, 0.000), i= c(0.000,	0.914,	0.049, 0.037), j= c(0.000, 0.071,	0.929, 0.000), k= c(0.001, 0.999,	0.000, 0.000), l= c(0.000, 0.000,	1.000,	0.000))
+
+#lists of estimated percent of HAT brood that returns as different spawning ages
+portion_hat_brood_to_spawn_age_INPUT <- list(a= c(0.00,	1.00,	0.00,	0.00), b= c(0.00,	0.96,	0.04,	0.00), c= c(0.05,	0.77,	0.18,	0.00), d= c(0.23,	0.77,	0.00,	0.00), e= c(0.00, 1.00,	0.00,	0.00), f= c(0.19,	0.81,	0.00,	0.00), g= c(0.30,	0.13,	0.58,	0.00))
+
+#model length and iterations
 years = 50 #how many years would we like to run the model
 runs = 1000 # a run is going through the cycle for the number of years desired. how many runs do we do Goal: 1000
 
@@ -32,9 +40,11 @@ for(k in 1:length(scenarios)) {
   n_hat_eggs_start <- 7500
   nat_fry_to_spawn_survival <- .0197 #1.97% geometric mean from jim 2009-2019 updated 6/10/24
   hat_fry_to_spawn_survival <- .0006 #0.06% geometric mean from jim 2009-2019 updated 6/10/24
-  # nat_brood_to_spawn_2 <- c(.04, 0.03, 0.05) prep to build randomness in the future
-  portion_nat_brood_to_spawn_age <- c(.0596, .6818, .2552, .0034) #average values for a composition that sums to 1, to estimate the percent of brood that later returned as spawners from 2009-2019. updated 5/29/24
-  portion_hat_brood_to_spawn_age <- c(.1091, .7757, .1151, 0) #updated 6/10/24
+ 
+#sample from list of value compositions that sum to 1. each sample gives a percent of brood that later returned as spawners in different age classes(2yr-5yr). Estimates from Jim Data. updated 7/24/2024. 
+  portion_nat_brood_to_spawn_age <- sample(portion_nat_brood_to_spawn_age_INPUT, 1)
+  #sample from list of value compositions that sum to 1. each sample gives a percent of brood that later returned as spawners in different age classes(2yr-5yr). Estimates from Jim Data. updated 7/24/2024. 
+  portion_hat_brood_to_spawn_age <- sample(portion_hat_brood_to_spawn_age_INPUT, 1)
   
   portion_spawner_to_hatch = NA
   max_num_spawners = 300
@@ -115,10 +125,10 @@ for(k in 1:length(scenarios)) {
       ## natural org fish fry to spawn ####
       n_nat_spawner <- n_nat_fry*nat_fry_to_spawn_survival
       
-      n_nat_year_2_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[1]
-      n_nat_year_3_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[2]
-      n_nat_year_4_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[3]
-      n_nat_year_5_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[4]
+      n_nat_year_2_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[[1]][1]
+      n_nat_year_3_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[[1]][2]
+      n_nat_year_4_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[[1]][3]
+      n_nat_year_5_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[[1]][4]
       
       nat_df[i,"year"] <- i
       nat_df[i+1,"2yo"] <- n_nat_year_2_spawners
@@ -130,10 +140,10 @@ for(k in 1:length(scenarios)) {
       ## hatchery fish fry to spawn ####
       n_hat_spawner <- n_hat_fry*hat_fry_to_spawn_survival
       
-      n_hat_year_2_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[1]
-      n_hat_year_3_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[2]
-      n_hat_year_4_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[3]
-      n_hat_year_5_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[4]
+      n_hat_year_2_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[[1]][1]
+      n_hat_year_3_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[[1]][2]
+      n_hat_year_4_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[[1]][3]
+      n_hat_year_5_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[[1]][4]
       
       hat_df[i,"year"] <- i
       hat_df[i+1,"2yo"] <- n_hat_year_2_spawners
