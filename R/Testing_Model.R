@@ -107,7 +107,7 @@ for(k in 1:length(scenarios)) {
       ## natural org fish fry to spawn ####
       n_nat_spawner <- n_nat_fry*nat_fry_to_spawn_survival
       
-      n_nat_year_2_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[1]
+      n_nat_year_2_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[[1]][1]
       n_nat_year_3_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[2]
       n_nat_year_4_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[3]
       n_nat_year_5_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[4]
