@@ -10,23 +10,121 @@ library(tidyverse) #for data minipulation and plotting
 library(ggrepel) # for labeling
 library(patchwork) #for assembling multipanel plots
 
-#load counts for each returner scenario
+#load mean counts for each returner scenario
 returners_wide <-read_csv("Output/overview_mean_spawners.csv", 
                           col_names = TRUE, # the columns already have names
                           col_select = -1) # we don't need the first column because it is just a list of numbers from when the row names were turned into a column during the "write" csv step.
 
 returners_long <- returners_wide %>% 
-  pivot_longer(!year, names_to = "scenario", values_to = "spawners") %>% #pivot to long format
+  pivot_longer(!year, names_to = "scenario", values_to = "mean_spawners") %>% #pivot to long format
   drop_na() #drop the NA values in years 1-5
 
+#quick plot
 returners_long %>% 
   mutate(label = if_else(year == max(year), as.character(scenario), NA_character_)) %>% 
-  ggplot(aes(x = year, y = spawners, group = scenario)) +
+  ggplot(aes(x = year, y = mean_spawners, group = scenario)) +
   geom_line(color = "gray") +
   geom_text(aes(label = label),
             nudge_x = 1,
             na.rm = TRUE) + 
   theme_classic()
+
+#load median for each returner scenario
+returners_median_wide <-read_csv("Output/overview_median_spawners.csv", 
+                          col_names = TRUE, # the columns already have names
+                          col_select = -1) # we don't need the first column because it is just a list of numbers from when the row names were turned into a column during the "write" csv step.
+
+returners_median_long <- returners_median_wide %>% 
+  pivot_longer(!year, names_to = "scenario", values_to = "median_spawners") %>% #pivot to long format
+  drop_na() #drop the NA values in years 1-5
+
+#quick plot
+returners_median_long %>% 
+  mutate(label = if_else(year == max(year), as.character(scenario), NA_character_)) %>% 
+  ggplot(aes(x = year, y = median_spawners, group = scenario)) +
+  geom_line(color = "gray") +
+  geom_text(aes(label = label),
+            nudge_x = 1,
+            na.rm = TRUE) + 
+  theme_classic()
+
+#load median for each returner scenario
+returners_sd_wide <-read_csv("Output/overview_sd_spawners.csv", 
+                                 col_names = TRUE, # the columns already have names
+                                 col_select = -1) # we don't need the first column because it is just a list of numbers from when the row names were turned into a column during the "write" csv step.
+
+returners_sd_long <- returners_sd_wide %>% 
+  pivot_longer(!year, names_to = "scenario", values_to = "sd_spawners") %>% #pivot to long format
+  drop_na() #drop the NA values in years 1-5
+
+returner_mids_long <-full_join(returners_long,returners_median_long, by = c("year", "scenario"))
+returner_stats_long<- full_join(returner_mids_long, returners_sd_long, by = c("year", "scenario"))
+
+#calculate the upper and lower bounds of the 95% CI using the SD
+#1.96 because it is the z-value associated with 95% (2.5 above and below)
+returner_stats_long$lowerCI <- returner_stats_long$mean_spawners - 1.96*returner_stats_long$sd_spawners 
+returner_stats_long$upperCI <- returner_stats_long$mean_spawners + 1.96*returner_stats_long$sd_spawners
+
+
+## Plot for October 2024 Kokanee release poster ####
+returner25 <-returner_stats_long %>% 
+  filter(year < 25) %>% 
+  mutate(label = if_else(year == max(year), as.character(scenario), NA_character_)) %>% 
+  filter(scenario %in% c("sc1.0", "B", "C")) 
+
+ggplot(data = returner25, aes(x = year, y = mean_spawners, group = scenario)) +
+  geom_text(aes(label = label),
+            nudge_x = 1,
+            na.rm = TRUE) + 
+  geom_line(color = "black") +
+  scale_y_continuous(limits = c(-1100, 5100), breaks = c(-1000,0,1000, 2000, 3000, 4000, 5000)) +
+  theme_classic()
+
+ggsave(filename = "Output/Kok_release_1_B_C.tiff", width = 10, height = 10, units = "in")
+
+## Just 1.0
+returner25 %>% filter(scenario == "sc1.0") %>% 
+  ggplot(aes(x = year, y = mean_spawners, group = scenario)) +
+  geom_text(aes(label = label),
+            nudge_x = 1,
+            na.rm = TRUE) + 
+  geom_line(color = "black") +
+  geom_line(data = returner25 %>% filter(scenario == "sc1.0"), aes(x = year, y = lowerCI), linetype = 2)+ 
+  geom_line(data = returner25%>% filter(scenario == "sc1.0"), aes(x = year, y = upperCI), linetype = 2)+
+  scale_y_continuous(limits = c(-1100, 5100), breaks = c(-1000,0,1000, 2000, 3000, 4000, 5000)) +
+  theme_classic()
+
+ggsave(filename = "Output/Kok_release_1.0.tiff", width = 10, height = 10, units = "in")
+
+## Just C
+returner25 %>% filter(scenario == "C") %>% 
+  ggplot(aes(x = year, y = mean_spawners, group = scenario)) +
+  geom_text(aes(label = label),
+            nudge_x = 1,
+            na.rm = TRUE) + 
+  geom_line(color = "black") +
+  geom_line(data = returner25 %>% filter(scenario == "C"), aes(x = year, y = lowerCI), linetype = 2)+ 
+  geom_line(data = returner25%>% filter(scenario == "C"), aes(x = year, y = upperCI), linetype = 2)+
+  scale_y_continuous(limits = c(-1100, 5100), breaks = c(-1000,0,1000, 2000, 3000, 4000, 5000)) +
+  theme_classic()
+
+ggsave(filename = "Output/Kok_release_C.tiff", width = 10, height = 10, units = "in")
+
+## Just B
+returner25 %>% filter(scenario == "B") %>% 
+  ggplot(aes(x = year, y = mean_spawners, group = scenario)) +
+  geom_text(aes(label = label),
+            nudge_x = 1,
+            na.rm = TRUE) + 
+  geom_line(color = "black") +
+  geom_line(data = returner25 %>% filter(scenario == "B"), aes(x = year, y = lowerCI), linetype = 2)+ 
+  geom_line(data = returner25%>% filter(scenario == "B"), aes(x = year, y = upperCI), linetype = 2)+
+  scale_y_continuous(limits = c(-1100, 5100), breaks = c(-1000,0,1000, 2000, 3000, 4000, 5000)) +
+  theme_classic()
+
+ggsave(filename = "Output/Kok_release_B.tiff", width = 10, height = 10, units = "in")
+
+## End Plot for October 2024 Kokanee release poster
 
 p1 <-returners_long %>% 
   mutate(label = if_else(year == max(year), as.character(scenario), NA_character_)) %>% 
@@ -70,7 +168,7 @@ all_threepanel <-p1 + p2 + p3 +
 ggsave(plot = all_threepanel, filename = "Output/allscenarios_zoom.tiff",
        width = 7.5, height = 5, units = "in")
 
-#Bailey uses Beka code to compare scenarios with their combo 
+#Bailey uses Beka code to compare scenarios with their combo ####
 returners_wide <-read_csv("Output/overview_mean_spawners.csv", 
                           col_names = TRUE, # the columns already have names
                           col_select = -1) # we don't need the first column because it is just a list of numbers from when the row names were turned into a column during the "write" csv step.
