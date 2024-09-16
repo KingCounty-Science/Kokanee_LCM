@@ -23,11 +23,21 @@ portion_hat_brood_to_spawn_age_INPUT <- list(a= c(0.00,	1.00,	0.00,	0.00), b= c(
 years = 50 #how many years would we like to run the model
 runs = 1000 # a run is going through the cycle for the number of years desired. how many runs do we do Goal: 1000
 
-#create a data frame that will store all the returner numbers
+#create a data frame that will store all the returner numbers as means
 returner_df <- matrix(data = NA, nrow = years, ncol = length(scenarios)+1) #this is for storing the average output of each scenario, the +1 allows for a col named "years"
 colnames(returner_df) <- c("year",scenarios) #name the columns
-
 returner_df[,1] <- 1:years #populate the first column of the df with the number of years, plus
+
+#create a data frame that will store all the returner numbers as medians
+returner_df_median <- matrix(data = NA, nrow = years, ncol = length(scenarios)+1) #this is for storing the average output of each scenario, the +1 allows for a col named "years"
+colnames(returner_df_median) <- c("year",scenarios) #name the columns
+returner_df_median[,1] <- 1:years #populate the first column of the df with the number of years, plus
+
+#create a data frame that will store all the returner numbers as the standard deviation for calculating 95% confidence interval
+returner_df_sd <- matrix(data = NA, nrow = years, ncol = length(scenarios)+1) #this is for storing the average output of each scenario, the +1 allows for a col named "years"
+colnames(returner_df_sd) <- c("year",scenarios) #name the columns
+returner_df_sd[,1] <- 1:years #populate the first column of the df with the number of years, plus
+
 
 for(k in 1:length(scenarios)) {
   scen <- scenarios[k]
@@ -267,12 +277,22 @@ for(k in 1:length(scenarios)) {
   write.csv(grand_df, grand_df_filename)
   
   returner_df[5:(years),k+1] <- rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)]
+  returner_df_median[5:(years),k+1] <- apply(grand_df[,-1], 1, median, na.rm = TRUE)[5:(years)]
+  returner_df_sd[5:(years),k+1] <- apply(grand_df[,-1], 1, sd, na.rm = TRUE)[5:(years)]
   
 } #end k loop
 
 #save the returner_df
 returner_df_filename <- paste0("Output/overview_mean_spawners.csv")
 write.csv(returner_df, returner_df_filename)
+
+#save the returner_df_median
+returner_df_median_filename <- paste0("Output/overview_median_spawners.csv")
+write.csv(returner_df_median, returner_df_median_filename)
+
+#save the returner_df_sd
+returner_df_sd_filename <- paste0("Output/overview_sd_spawners.csv")
+write.csv(returner_df_sd, returner_df_sd_filename)
 
 #establish top of range in data fram from model output 
 top_of_range_returner <- max(returner_df, na.rm = TRUE)
