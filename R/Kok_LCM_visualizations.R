@@ -80,7 +80,7 @@ ggplot(data = returner25, aes(x = year, y = mean_spawners, group = scenario)) +
   scale_y_continuous(limits = c(-1100, 5100), breaks = c(-1000,0,1000, 2000, 3000, 4000, 5000)) +
   theme_classic()
 
-ggsave(filename = "Output/Kok_release_1_B_C.tiff", width = 10, height = 10, units = "in")
+ggsave(filename = "Output/Kok_release_1_B_C.tiff", width = 6, height = 6, units = "in")
 
 ## Just 1.0
 returner25 %>% filter(scenario == "sc1.0") %>% 
@@ -94,7 +94,7 @@ returner25 %>% filter(scenario == "sc1.0") %>%
   scale_y_continuous(limits = c(-1100, 5100), breaks = c(-1000,0,1000, 2000, 3000, 4000, 5000)) +
   theme_classic()
 
-ggsave(filename = "Output/Kok_release_1.0.tiff", width = 10, height = 10, units = "in")
+ggsave(filename = "Output/Kok_release_1.0.tiff", width = 6, height = 6, units = "in")
 
 ## Just C
 returner25 %>% filter(scenario == "C") %>% 
@@ -108,7 +108,7 @@ returner25 %>% filter(scenario == "C") %>%
   scale_y_continuous(limits = c(-1100, 5100), breaks = c(-1000,0,1000, 2000, 3000, 4000, 5000)) +
   theme_classic()
 
-ggsave(filename = "Output/Kok_release_C.tiff", width = 10, height = 10, units = "in")
+ggsave(filename = "Output/Kok_release_C.tiff", width = 6, height = 6, units = "in")
 
 ## Just B
 returner25 %>% filter(scenario == "B") %>% 
@@ -122,7 +122,7 @@ returner25 %>% filter(scenario == "B") %>%
   scale_y_continuous(limits = c(-1100, 5100), breaks = c(-1000,0,1000, 2000, 3000, 4000, 5000)) +
   theme_classic()
 
-ggsave(filename = "Output/Kok_release_B.tiff", width = 10, height = 10, units = "in")
+ggsave(filename = "Output/Kok_release_B.tiff", width = 6, height = 6, units = "in")
 
 ## End Plot for October 2024 Kokanee release poster
 
