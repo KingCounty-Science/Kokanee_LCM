@@ -4,6 +4,7 @@
 # rstiling@kingcounty.gov, bkeeler@kingcounty.gov
 #=== === === === === === === ===
 
+set.seed(9) #mia hamm's jersey number. So that plots remain the same
 
 #List of scenarios
 scenarios <- c("sc1.0", 
@@ -11,7 +12,7 @@ scenarios <- c("sc1.0",
                "sc3.1", "sc3.2", 
                "sc4.1", "sc4.2",
                "sc5.1", "sc5.2",
-               "A", "B", "C", "D", "E")
+               "A", "B", "C", "D", "E", "F")
 
 #lists of estimated percent of NAT brood that returns as different spawning ages
 portion_nat_brood_to_spawn_age_INPUT <- list(a= c(0, .563, .437, 0), b= c(0, .999, .001, 0), c= c(0.000,	0.545, 0.455, 0.000), d= c(0.000,	0.480, 0.520, 0.000), e= c(0.035,	0.955, 0.010, 0.000), f= c(0.338,	0.584, 0.078,	0.000), g= c(0.000,	1.000, 0.000,	0.000), h= c(0.006,	0.716, 0.278, 0.000), i= c(0.000,	0.914,	0.049, 0.037), j= c(0.000, 0.071,	0.929, 0.000), k= c(0.001, 0.999,	0.000, 0.000), l= c(0.000, 0.000,	1.000,	0.000))
@@ -223,7 +224,7 @@ for(k in 1:length(scenarios)) {
       
       grand_df[i, j+1] <- healthy_spawners
       
-    } #end i loop
+    } #end i loop (last year completed)
     
     #plot based on manually set y-axis range
     if (j == 1) {
@@ -232,15 +233,15 @@ for(k in 1:length(scenarios)) {
            xlab = "years", 
            ylab = "healthy spawners",
            ylim = c(0, 1400),   #set y-axis manually here
-           col = "gray") 
+           col = rgb(.79,.79,.79,.2)) #4th term is alpha/transparency
     } else { 
       lines(x = grand_df[5:(years),1],
             y = grand_df[5:(years),1+j],
-            col= "gray")
+            col= rgb(.79,.79,.79,.2))
     } 
     
     
-  }  #end j loop
+  }  #end j loop (last run of that scenario completed)
   
   lines(x = grand_df[5:(years),1],
         y = rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)])
@@ -260,11 +261,11 @@ for(k in 1:length(scenarios)) {
        xlab = "years", 
        ylab = "healthy spawners",
        ylim = c(0, top_of_range),
-       col = "gray")
+       col = rgb(.79,.79,.79,.2))
   for(i in c(3:dim(grand_df)[2])){
     lines(x = grand_df[5:nrow(grand_df)],
           y = grand_df[5:nrow(grand_df), i],
-          col = "gray")
+          col = rgb(.79,.79,.79,.2))
   }
   
   lines(x = grand_df[5:(years),1],
@@ -280,7 +281,7 @@ for(k in 1:length(scenarios)) {
   returner_df_median[5:(years),k+1] <- apply(grand_df[,-1], 1, median, na.rm = TRUE)[5:(years)]
   returner_df_sd[5:(years),k+1] <- apply(grand_df[,-1], 1, sd, na.rm = TRUE)[5:(years)]
   
-} #end k loop
+} #end k loop (last scenario completed)
 
 #save the returner_df
 returner_df_filename <- paste0("Output/overview_mean_spawners.csv")
