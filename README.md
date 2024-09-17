@@ -13,3 +13,10 @@ Testing_Model.R - script to assess if early results reflect recent observations.
 
 ### Folder: Output
 Plots and csv files from each scenario. Visualizations for communications and events.
+
+File naming convention:
+- "mean_spawners_[scenario name].csv" : output data of the number of returners for each year for each of the runs.
+- "plot_mean_spawners_[scenario name].tiff" : plot of the number of returners for each year for each of the runs with a solid mean and dashed median line.
+- "allscenarios_zoom.tiff" : mean outcome from all runs, zoomed in a little more each panel to see additional detail in low numbers.
+- "Kok_release_[scenario].tiff : visualizations for kokanee release poster
+- "overview_[stat]_spawners.csv : files with the population mean, median, and sd for each year of the model for each scenario
