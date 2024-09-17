@@ -232,5 +232,5 @@ all_threepanelB <-S21S31A + s21s41B + s21s51C +
   plot_annotation(tag_levels = 'A') & theme(plot.tag.position = c(0.1, 1))
 all_threepanelB
 
-ggsave(plot = all_threepanelB, filename = "Output/allscenarios_zoom.tiff",
+ggsave(plot = all_threepanelB, filename = "Output/allscenarios_zoom_Bailey.tiff",
        width = 7.5, height = 5, units = "in")
