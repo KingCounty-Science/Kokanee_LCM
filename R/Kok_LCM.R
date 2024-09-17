@@ -269,7 +269,10 @@ for(k in 1:length(scenarios)) {
   }
   
   lines(x = grand_df[5:(years),1],
-        y = rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)])
+        y = rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)]) #solid line for mean
+  lines(x = grand_df[5:(years),1],
+        y = apply(grand_df[,-1], 1, median, na.rm = TRUE)[5:(years)],
+        lty = 2) # dashed line for median
   
   dev.off()
   
