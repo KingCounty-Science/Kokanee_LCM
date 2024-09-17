@@ -62,8 +62,10 @@ returner_stats_long<- full_join(returner_mids_long, returners_sd_long, by = c("y
 
 #calculate the upper and lower bounds of the 95% CI using the SD
 #1.96 because it is the z-value associated with 95% (2.5 above and below)
-returner_stats_long$lowerCI <- returner_stats_long$mean_spawners - 1.96*returner_stats_long$sd_spawners 
-returner_stats_long$upperCI <- returner_stats_long$mean_spawners + 1.96*returner_stats_long$sd_spawners
+returner_stats_long$lowerCI <- returner_stats_long$mean_spawners - 
+  1.96*((returner_stats_long$sd_spawners/(sqrt(1000)))) 
+returner_stats_long$upperCI <- returner_stats_long$mean_spawners + 
+  1.96*((returner_stats_long$sd_spawners/(sqrt(1000))))
 
 
 ## Plot for October 2024 Kokanee release poster ####
@@ -77,7 +79,7 @@ ggplot(data = returner25, aes(x = year, y = mean_spawners, group = scenario)) +
             nudge_x = 1,
             na.rm = TRUE) + 
   geom_line(color = "black") +
-  scale_y_continuous(limits = c(-1100, 5100), breaks = c(-1000,0,1000, 2000, 3000, 4000, 5000)) +
+  scale_y_continuous(limits = c(0, 5000), breaks = c(0,1000, 2000, 3000, 4000, 5000)) +
   theme_classic()
 
 ggsave(filename = "Output/Kok_release_1_B_C.tiff", width = 6, height = 6, units = "in")
@@ -91,7 +93,7 @@ returner25 %>% filter(scenario == "sc1.0") %>%
   geom_line(color = "black") +
   geom_line(data = returner25 %>% filter(scenario == "sc1.0"), aes(x = year, y = lowerCI), linetype = 2)+ 
   geom_line(data = returner25%>% filter(scenario == "sc1.0"), aes(x = year, y = upperCI), linetype = 2)+
-  scale_y_continuous(limits = c(-1100, 5100), breaks = c(-1000,0,1000, 2000, 3000, 4000, 5000)) +
+  scale_y_continuous(limits = c(0, 5000), breaks = c(0,1000, 2000, 3000, 4000, 5000)) +
   theme_classic()
 
 ggsave(filename = "Output/Kok_release_1.0.tiff", width = 6, height = 6, units = "in")
@@ -105,7 +107,7 @@ returner25 %>% filter(scenario == "C") %>%
   geom_line(color = "black") +
   geom_line(data = returner25 %>% filter(scenario == "C"), aes(x = year, y = lowerCI), linetype = 2)+ 
   geom_line(data = returner25%>% filter(scenario == "C"), aes(x = year, y = upperCI), linetype = 2)+
-  scale_y_continuous(limits = c(-1100, 5100), breaks = c(-1000,0,1000, 2000, 3000, 4000, 5000)) +
+  scale_y_continuous(limits = c(0, 5000), breaks = c(0,1000, 2000, 3000, 4000, 5000)) +
   theme_classic()
 
 ggsave(filename = "Output/Kok_release_C.tiff", width = 6, height = 6, units = "in")
@@ -119,7 +121,7 @@ returner25 %>% filter(scenario == "B") %>%
   geom_line(color = "black") +
   geom_line(data = returner25 %>% filter(scenario == "B"), aes(x = year, y = lowerCI), linetype = 2)+ 
   geom_line(data = returner25%>% filter(scenario == "B"), aes(x = year, y = upperCI), linetype = 2)+
-  scale_y_continuous(limits = c(-1100, 5100), breaks = c(-1000,0,1000, 2000, 3000, 4000, 5000)) +
+  scale_y_continuous(limits = c(0, 5000), breaks = c(0,1000, 2000, 3000, 4000, 5000)) +
   theme_classic()
 
 ggsave(filename = "Output/Kok_release_B.tiff", width = 6, height = 6, units = "in")
