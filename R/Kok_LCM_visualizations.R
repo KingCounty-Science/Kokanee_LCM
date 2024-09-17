@@ -79,7 +79,7 @@ ggplot(data = returner25, aes(x = year, y = mean_spawners, group = scenario)) +
             nudge_x = 1,
             na.rm = TRUE) + 
   geom_line(color = "black") +
-  scale_y_continuous(limits = c(0, 5000), breaks = c(0,1000, 2000, 3000, 4000, 5000)) +
+  scale_y_continuous(limits = c(0, 6500), breaks = c(0,1000, 2000, 3000, 4000, 5000, 6000)) +
   theme_classic()
 
 ggsave(filename = "Output/Kok_release_1_B_C.tiff", width = 6, height = 6, units = "in")
@@ -93,7 +93,7 @@ returner25 %>% filter(scenario == "sc1.0") %>%
   geom_line(color = "black") +
   geom_line(data = returner25 %>% filter(scenario == "sc1.0"), aes(x = year, y = lowerCI), linetype = 2)+ 
   geom_line(data = returner25%>% filter(scenario == "sc1.0"), aes(x = year, y = upperCI), linetype = 2)+
-  scale_y_continuous(limits = c(0, 5000), breaks = c(0,1000, 2000, 3000, 4000, 5000)) +
+  scale_y_continuous(limits = c(0, 6500), breaks = c(0,1000, 2000, 3000, 4000, 5000, 6000)) +
   theme_classic()
 
 ggsave(filename = "Output/Kok_release_1.0.tiff", width = 6, height = 6, units = "in")
@@ -107,7 +107,7 @@ returner25 %>% filter(scenario == "C") %>%
   geom_line(color = "black") +
   geom_line(data = returner25 %>% filter(scenario == "C"), aes(x = year, y = lowerCI), linetype = 2)+ 
   geom_line(data = returner25%>% filter(scenario == "C"), aes(x = year, y = upperCI), linetype = 2)+
-  scale_y_continuous(limits = c(0, 5000), breaks = c(0,1000, 2000, 3000, 4000, 5000)) +
+  scale_y_continuous(limits = c(0, 6500), breaks = c(0,1000, 2000, 3000, 4000, 5000, 6000)) +
   theme_classic()
 
 ggsave(filename = "Output/Kok_release_C.tiff", width = 6, height = 6, units = "in")
@@ -130,7 +130,7 @@ ggsave(filename = "Output/Kok_release_B.tiff", width = 6, height = 6, units = "i
 
 p1 <-returners_long %>% 
   mutate(label = if_else(year == max(year), as.character(scenario), NA_character_)) %>% 
-  ggplot(aes(x = year, y = spawners, group = scenario)) +
+  ggplot(aes(x = year, y = mean_spawners, group = scenario)) +
   geom_line(color = "gray") +
   # scale_x_continuous(limits = c(0,60), breaks = c(10, 20, 30, 40, 50)) + 
   # geom_rect(xmin = 55,
@@ -144,9 +144,9 @@ p1 <-returners_long %>%
 p1
 
 p2 <-returners_long %>%
-  filter(!scenario %in%  c("sc5.2", "C")) %>% 
+  filter(!scenario %in%  c("sc5.2", "C", "F")) %>% 
   mutate(label = if_else(year == max(year), as.character(scenario), NA_character_)) %>% 
-  ggplot(aes(x = year, y = spawners, group = scenario)) +
+  ggplot(aes(x = year, y = mean_spawners, group = scenario)) +
   geom_line(color = "gray") +
   geom_label_repel(aes(label = label),
                    nudge_x = 1,
@@ -154,9 +154,9 @@ p2 <-returners_long %>%
   theme_classic()
 p2  
 p3 <-returners_long %>%
-  filter(!scenario %in%  c("sc5.2", "C", "sc5.1", "E", "sc2.3", "A")) %>% 
+  filter(!scenario %in%  c("sc5.2", "C", "sc5.1", "E", "sc2.3", "A", "B", "F")) %>% 
   mutate(label = if_else(year == max(year), as.character(scenario), NA_character_)) %>% 
-  ggplot(aes(x = year, y = spawners, group = scenario)) +
+  ggplot(aes(x = year, y = mean_spawners, group = scenario)) +
   geom_line(color = "gray") +
   geom_label_repel(aes(label = label),
                    nudge_x = 1,
