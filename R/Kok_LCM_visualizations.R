@@ -60,12 +60,9 @@ returners_sd_long <- returners_sd_wide %>%
 returner_mids_long <-full_join(returners_long,returners_median_long, by = c("year", "scenario"))
 returner_stats_long<- full_join(returner_mids_long, returners_sd_long, by = c("year", "scenario"))
 
-#calculate the upper and lower bounds of the 95% CI using the SD
-#1.96 because it is the z-value associated with 95% (2.5 above and below)
-returner_stats_long$lowerCI <- returner_stats_long$mean_spawners - 
-  1.96*((returner_stats_long$sd_spawners/(sqrt(1000)))) 
-returner_stats_long$upperCI <- returner_stats_long$mean_spawners + 
-  1.96*((returner_stats_long$sd_spawners/(sqrt(1000))))
+#calculate the upper and lower bounds of the 95% CI using the sd - showing 2 standard deviations above and below mean
+returner_stats_long$lowerCI <- returner_stats_long$mean_spawners - 2*returner_stats_long$sd_spawners
+returner_stats_long$upperCI <- returner_stats_long$mean_spawners + 2*returner_stats_long$sd_spawners
 
 
 ## Plot for October 2024 Kokanee release poster ####
