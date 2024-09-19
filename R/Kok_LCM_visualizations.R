@@ -133,24 +133,37 @@ scB <-read_csv("output/mean_spawners_B.csv")
 hist_plot <- function(scenario) {
   ggplot(scenario %>% filter(V1 == 25) %>% select(V1:V1001) %>%
            pivot_longer(!V1, names_to = "run", values_to = "mean_spawners"), aes(x = mean_spawners )) +
-  geom_histogram(binwidth = 10) +
-  theme_minimal()
+  geom_histogram(binwidth = 50) +
+    labs(x = "returning spawners") +
+    coord_flip() +
+    theme_minimal()
+
 }
+
+p1<-hist_plot(sc01)
+p2<-hist_plot(scB)
+p3<-hist_plot(scC)
+
 
 dens_plot <- function(scenario) {
   ggplot(scenario %>% filter(V1 == 25) %>% select(V1:V1001) %>%
            pivot_longer(!V1, names_to = "run", values_to = "mean_spawners"), aes(x = mean_spawners )) +
     geom_density() +
+    coord_flip() +
     theme_minimal()
 }
 
-hist_plot(sc01)
-hist_plot(scC)
-hist_plot(scB)
 
-dens_plot(sc01)
-dens_plot(scC)
-dens_plot(scB)
+
+p4<-dens_plot(sc01)
+p5<-dens_plot(scB)
+p6<-dens_plot(scC)
+
+
+(p1+p4)/(p2+p5)/(p3+p6) + 
+  plot_annotation(
+    title = "Count of returners after 25 years" ,
+    tag_levels = list(c( "scenario 01", "", "Combo B", ",", "Combo C", "")))
 
 #What if I wanted to sum four years in a row to truly establish no fish returning at all? I need to reshape, then group by and summarize 
 sc01 %>% 
@@ -159,8 +172,8 @@ sc01 %>%
   pivot_longer(!V1, names_to = "run", values_to = "mean_spawners") %>% 
   group_by(run) %>% 
   summarise(N = n(),
-            sum_0 = sum(mean_spawners)) %>% 
-  ggplot(aes(x = sum_0)) +
+            sum_4yrs_0 = sum(mean_spawners)) %>% 
+  ggplot(aes(x = sum_4yrs_0)) +
   geom_histogram(binwidth = 10) +
   theme_minimal()
 
@@ -170,8 +183,8 @@ sc01 %>%
   pivot_longer(!V1, names_to = "run", values_to = "mean_spawners") %>% 
   group_by(run) %>% 
   summarise(N = n(),
-            sum_0 = sum(mean_spawners)) %>% 
-  filter(sum_0 <1)
+            sum_4yrs_0 = sum(mean_spawners)) %>% 
+  filter(sum_4yrs_0 <1)
 
 sc01 %>% 
   filter(V1 %in% c(47, 48, 49, 50)) %>% 
@@ -179,8 +192,8 @@ sc01 %>%
   pivot_longer(!V1, names_to = "run", values_to = "mean_spawners") %>% 
   group_by(run) %>% 
   summarise(N = n(),
-            sum_0 = sum(mean_spawners)) %>% 
-  ggplot(aes(x = sum_0)) +
+            sum_4yrs_0 = sum(mean_spawners)) %>% 
+  ggplot(aes(x = sum_4yrs_0)) +
   geom_histogram(binwidth = 1) +
   theme_minimal()
 
