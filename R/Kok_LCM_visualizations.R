@@ -81,7 +81,7 @@ ggplot(data = returner25, aes(x = year, y = mean_spawners, group = scenario)) +
 
 ggsave(filename = "Output/Kok_release_1_B_C.tiff", width = 6, height = 6, units = "in")
 
-## Just 1.0
+### Just 1.0 ####
 returner25 %>% filter(scenario == "sc1.0") %>% 
   ggplot(aes(x = year, y = mean_spawners, group = scenario)) +
   geom_text(aes(label = label),
@@ -95,7 +95,7 @@ returner25 %>% filter(scenario == "sc1.0") %>%
 
 ggsave(filename = "Output/Kok_release_1.0.tiff", width = 6, height = 6, units = "in")
 
-## Just C
+### Just C ####
 returner25 %>% filter(scenario == "C") %>% 
   ggplot(aes(x = year, y = mean_spawners, group = scenario)) +
   geom_text(aes(label = label),
@@ -109,7 +109,7 @@ returner25 %>% filter(scenario == "C") %>%
 
 ggsave(filename = "Output/Kok_release_C.tiff", width = 6, height = 6, units = "in")
 
-## Just B
+### Just B ####
 returner25 %>% filter(scenario == "B") %>% 
   ggplot(aes(x = year, y = mean_spawners, group = scenario)) +
   geom_text(aes(label = label),
@@ -123,8 +123,70 @@ returner25 %>% filter(scenario == "B") %>%
 
 ggsave(filename = "Output/Kok_release_B.tiff", width = 6, height = 6, units = "in")
 
-## End Plot for October 2024 Kokanee release poster
+### Histogram for scenarios demonstrating population at end of run. ####
+sc01 <-read_csv("output/mean_spawners_sc1.0.csv")
+scC <-read_csv("output/mean_spawners_C.csv")
+scB <-read_csv("output/mean_spawners_B.csv")
 
+#write a function to plot the histogram of a scenario
+
+hist_plot <- function(scenario) {
+  ggplot(scenario %>% filter(V1 == 25) %>% select(V1:V1001) %>%
+           pivot_longer(!V1, names_to = "run", values_to = "mean_spawners"), aes(x = mean_spawners )) +
+  geom_histogram(binwidth = 10) +
+  theme_minimal()
+}
+
+dens_plot <- function(scenario) {
+  ggplot(scenario %>% filter(V1 == 25) %>% select(V1:V1001) %>%
+           pivot_longer(!V1, names_to = "run", values_to = "mean_spawners"), aes(x = mean_spawners )) +
+    geom_density() +
+    theme_minimal()
+}
+
+hist_plot(sc01)
+hist_plot(scC)
+hist_plot(scB)
+
+dens_plot(sc01)
+dens_plot(scC)
+dens_plot(scB)
+
+#What if I wanted to sum four years in a row to truly establish no fish returning at all? I need to reshape, then group by and summarize 
+sc01 %>% 
+  filter(V1 %in% c(22, 23, 24, 25)) %>% 
+  select(V1:V1001) %>% 
+  pivot_longer(!V1, names_to = "run", values_to = "mean_spawners") %>% 
+  group_by(run) %>% 
+  summarise(N = n(),
+            sum_0 = sum(mean_spawners)) %>% 
+  ggplot(aes(x = sum_0)) +
+  geom_histogram(binwidth = 10) +
+  theme_minimal()
+
+sc01 %>% 
+  filter(V1 %in% c(47, 48, 49, 50)) %>% 
+  select(V1:V1001) %>% 
+  pivot_longer(!V1, names_to = "run", values_to = "mean_spawners") %>% 
+  group_by(run) %>% 
+  summarise(N = n(),
+            sum_0 = sum(mean_spawners)) %>% 
+  filter(sum_0 <1)
+
+sc01 %>% 
+  filter(V1 %in% c(47, 48, 49, 50)) %>% 
+  select(V1:V1001) %>% 
+  pivot_longer(!V1, names_to = "run", values_to = "mean_spawners") %>% 
+  group_by(run) %>% 
+  summarise(N = n(),
+            sum_0 = sum(mean_spawners)) %>% 
+  ggplot(aes(x = sum_0)) +
+  geom_histogram(binwidth = 1) +
+  theme_minimal()
+
+## End Plot for October 2024 Kokanee release poster 
+
+## Three scenaro zoom in ####
 p1 <-returners_long %>% 
   mutate(label = if_else(year == max(year), as.character(scenario), NA_character_)) %>% 
   ggplot(aes(x = year, y = mean_spawners, group = scenario)) +
@@ -166,6 +228,7 @@ all_threepanel <-p1 + p2 + p3 +
 
 ggsave(plot = all_threepanel, filename = "Output/allscenarios_zoom.tiff",
        width = 7.5, height = 5, units = "in")
+
 
 #Bailey uses Beka code to compare scenarios with their combo ####
 returners_wide <-read_csv("Output/overview_mean_spawners.csv", 
