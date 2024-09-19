@@ -168,10 +168,11 @@ for(k in 1:length(scenarios)) {
       else 
       {
         #total the spawners returning for the next round
-        nat_spawner_rets <- nat_df[i,"sum_spawn_rets"]
+        #floor takes any partial fish counted as a returner and rounds down to the nearest whole fish
+        nat_spawner_rets <- floor(nat_df[i,"sum_spawn_rets"]) 
         
         #total the spawners returning for the next round
-        hat_spawner_rets <- hat_df[i,"sum_spawn_rets"]
+        hat_spawner_rets <- floor(hat_df[i,"sum_spawn_rets"])
         
         # spawner to egg ####
         #total spawners that returned
