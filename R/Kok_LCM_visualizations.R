@@ -149,6 +149,7 @@ dens_plot <- function(scenario) {
   ggplot(scenario %>% filter(V1 == 25) %>% select(V1:V1001) %>%
            pivot_longer(!V1, names_to = "run", values_to = "mean_spawners"), aes(x = mean_spawners )) +
     geom_density() +
+    labs(x = "") +
     coord_flip() +
     theme_minimal()
 }
@@ -164,6 +165,9 @@ p6<-dens_plot(scC)
   plot_annotation(
     title = "Count of returners after 25 years" ,
     tag_levels = list(c( "scenario 01", "", "Combo B", ",", "Combo C", "")))
+
+ggsave(filename = "Output/Kok_release__hist_outcomes_25_years.tiff",
+       width = 5, height = 7.5, units = "in")
 
 #What if I wanted to sum four years in a row to truly establish no fish returning at all? I need to reshape, then group by and summarize 
 sc01 %>% 
