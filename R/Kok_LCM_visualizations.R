@@ -379,5 +379,5 @@ ComboBC <-Combo_B_Plot + Combo_C_Plot +
   plot_annotation(tag_levels = custom_tags) & theme(plot.tag.position = c(.3, 1))
 ComboBC
 
-ggsave(plot = COMBOBC, filename = "Output/allscenarios_zoom_Bailey.tiff",
+ggsave(plot = ComboBC, filename = "Output/allscenarios_zoom_Bailey.tiff",
        width = 7.5, height = 5, units = "in")
