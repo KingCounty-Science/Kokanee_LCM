@@ -243,7 +243,7 @@ ggsave(plot = all_threepanel, filename = "Output/allscenarios_zoom.tiff",
        width = 7.5, height = 5, units = "in")
 
 
-#Bailey uses Beka code to compare scenarios with their combo ####
+#Bailey uses Beka code to compare scenarios with their combos ####
 returners_wide <-read_csv("Output/overview_mean_spawners.csv", 
                           col_names = TRUE, # the columns already have names
                           col_select = -1) # we don't need the first column because it is just a list of numbers from when the row names were turned into a column during the "write" csv step.
@@ -301,9 +301,83 @@ s21s51C <-returners_long %>%
 
 s21s51C
 
+
+
 all_threepanelB <-S21S31A + s21s41B + s21s51C +
-  plot_annotation(tag_levels = 'A') & theme(plot.tag.position = c(0.1, 1))
+  plot_annotation(tag_levels = "A") & theme(plot.tag.position = c(.3, 1))
 all_threepanelB
 
-ggsave(plot = all_threepanelB, filename = "Output/allscenarios_zoom_Bailey.tiff",
+#Editing plot labels for Public Event: Only Combo B and C 
+
+returners_wide <-read_csv("Output/overview_mean_spawners.csv", 
+                          col_names = TRUE, # the columns already have names
+                          col_select = -1) # we don't need the first column because it is just a list of numbers from when the row names were turned into a column during the "write" csv step.
+
+returners_long <- returners_wide %>% 
+  pivot_longer(!year, names_to = "scenario", values_to = "spawners") %>% #pivot to long format
+  drop_na() #drop the NA values in years 1-5
+
+returners_long %>% 
+  mutate(label = if_else(year == max(year), as.character(scenario), NA_character_)) %>% 
+  ggplot(aes(x = year, y = spawners, group = scenario)) +
+  geom_line(color = "gray") +
+  geom_text(aes(label = label),
+            nudge_x = 1,
+            na.rm = TRUE) + 
+  theme_classic()
+
+#change labels combo B
+s21s41B <-returners_long %>%
+  filter(scenario %in%  c("sc2.1", "sc4.1", "B")) %>% 
+  mutate(label = case_when(
+    scenario == "sc2.1" ~ "improve lake survival for hatchery 
+    fry to match natural fry", 
+    scenario == "sc4.1" ~ "Increase natural egg to fry survival by 2%", 
+    scenario =="B" ~ "2 Actions Combined", 
+    TRUE ~ NA_character_)) 
+
+
+#plot Combo B 
+  Combo_B_Plot <- ggplot(s21s41B, aes(x = year, y = spawners, group = scenario)) +
+    geom_line(color = "gray") +
+    geom_label_repel(data = s21s41B %>% filter(year == max(year)), 
+                     aes(label = label),
+                     nudge_x = 1, nudge_y = -150,
+                     size = 2,
+                     na.rm = TRUE) +  # Only show labels for the max year
+    theme_classic()
+
+Combo_B_Plot
+
+#change labels combo C
+s21s51C <-returners_long %>%
+  filter(scenario %in%  c("sc2.1", "sc5.1", "C")) %>% 
+  mutate(label = case_when(
+    scenario == "sc2.1" ~ "improve lake survival for hatchery fry to match natural fry", 
+    scenario == "sc5.1" ~ "Double natural fry 
+    to adult survival", 
+    scenario =="C" ~ "2 Actions Combined", 
+    TRUE ~ NA_character_)) 
+
+#plot Combo C
+Combo_C_Plot <- ggplot(s21s51C, aes(x = year, y = spawners, group = scenario)) +
+  geom_line(color = "gray") +
+  geom_label_repel(data = s21s51C %>% filter(year == max(year)), 
+                   aes(label = label),
+                   nudge_x = 0, 
+                   nudge_y = 200,
+                   size = 2,
+                   na.rm = TRUE) +  # Only show labels for the max year
+  theme_classic()
+
+Combo_C_Plot
+
+
+custom_tags <- c("i", "ii")
+
+ComboBC <-Combo_B_Plot + Combo_C_Plot +
+  plot_annotation(tag_levels = custom_tags) & theme(plot.tag.position = c(.3, 1))
+ComboBC
+
+ggsave(plot = COMBOBC, filename = "Output/allscenarios_zoom_Bailey.tiff",
        width = 7.5, height = 5, units = "in")
