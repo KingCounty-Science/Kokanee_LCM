@@ -118,7 +118,7 @@ returner25 %>% filter(scenario == "B") %>%
   geom_line(color = "black") +
   geom_line(data = returner25 %>% filter(scenario == "B"), aes(x = year, y = lowerCI), linetype = 2)+ 
   geom_line(data = returner25%>% filter(scenario == "B"), aes(x = year, y = upperCI), linetype = 2)+
-  scale_y_continuous(limits = c(0, 5000), breaks = c(0,1000, 2000, 3000, 4000, 5000)) +
+  scale_y_continuous(limits = c(0, 6500), breaks = c(0,1000, 2000, 3000, 4000, 5000, 6000)) +
   theme_classic()
 
 ggsave(filename = "Output/Kok_release_B.tiff", width = 6, height = 6, units = "in")
@@ -200,6 +200,27 @@ sc01 %>%
   ggplot(aes(x = sum_4yrs_0)) +
   geom_histogram(binwidth = 1) +
   theme_minimal()
+
+## What if I pulled quantiles for each year and drew a line for the various levels
+scC %>% 
+  filter(V1 %in% c(5:25)) %>% 
+  select(V1:V1001) %>% 
+  pivot_longer(!V1, names_to = "run", values_to = "mean_spawners") %>% 
+  group_by(V1) %>% 
+  reframe(spawners = quantile(mean_spawners, 
+                              c(0.025,0.25, 0.75, 0.975)), 
+          quantile = c("2.5%", "25%", "50%", "97.5%"))  %>% 
+  ggplot(aes(x = V1, y = spawners, color = quantile)) +
+  geom_line() +
+  scale_color_manual(values=c("#DFABAB",  "#4DD0E1", "#4DD0E1",  "#DFABAB")) +
+  geom_line(data = returner25 %>% filter(scenario == "C"), aes(x = year, y = mean_spawners), linetype = 1, color = "black") +
+  geom_line(data = returner25 %>% filter(scenario == "C"), aes(x = year, y = median_spawners), linetype = 2, color = "black") +
+  xlab("year") +
+  scale_y_continuous(limits = c(0, 7000), breaks = c(0,1000, 2000, 3000, 4000, 5000, 6000)) +
+  theme_classic()
+
+ggsave(filename = "Output/Kok_release_C_quantiles.tiff",
+       width = 6, height = 6, units = "in")
 
 ## End Plot for October 2024 Kokanee release poster 
 
