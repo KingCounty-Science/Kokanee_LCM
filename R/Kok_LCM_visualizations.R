@@ -209,7 +209,7 @@ scC %>%
   group_by(V1) %>% 
   reframe(spawners = quantile(mean_spawners, 
                               c(0.025,0.25, 0.75, 0.975)), 
-          quantile = c("2.5%", "25%", "50%", "97.5%"))  %>% 
+          quantile = c("2.5%", "25%", "75%", "97.5%"))  %>% 
   ggplot(aes(x = V1, y = spawners, color = quantile)) +
   geom_line() +
   scale_color_manual(values=c("#DFABAB",  "#4DD0E1", "#4DD0E1",  "#DFABAB")) +
