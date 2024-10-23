@@ -234,11 +234,11 @@ for(k in 1:length(scenarios)) {
            xlab = "years", 
            ylab = "healthy spawners",
            ylim = c(0, 1400),   #set y-axis manually here
-           col = rgb(.79,.79,.79,.2)) #4th term is alpha/transparency
+           col = rgb(.79,.79,.79,.1)) #4th term is alpha/transparency
     } else { 
       lines(x = grand_df[5:(years),1],
             y = grand_df[5:(years),1+j],
-            col= rgb(.79,.79,.79,.2))
+            col= rgb(.79,.79,.79,.1))
     } 
     
     
@@ -262,11 +262,11 @@ for(k in 1:length(scenarios)) {
        xlab = "years", 
        ylab = "healthy spawners",
        ylim = c(0, top_of_range),
-       col = rgb(.79,.79,.79,.2))
+       col = rgb(.79,.79,.79,.1))
   for(i in c(3:dim(grand_df)[2])){
     lines(x = grand_df[5:nrow(grand_df)],
           y = grand_df[5:nrow(grand_df), i],
-          col = rgb(.79,.79,.79,.2))
+          col = rgb(.79,.79,.79,.1))
   }
   
   lines(x = grand_df[5:(years),1],
