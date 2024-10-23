@@ -22,3 +22,16 @@ mean_spawners_sc2.3.csv
 mean_spawners_sc3.1.csv
 mean_spawners_sc3.2.csv
 mean_spawners_sc4.1.csv
+mean_spawners_F.csv
+overview_median_spawners.csv
+overview_sd_spawners.csv
+plot_mean_spawners_F.tiff
+plot_mean_spawners_sc2.2.tiff
+plot_mean_spawners_sc2.3.tiff
+plot_mean_spawners_sc3.1.tiff
+plot_mean_spawners_sc3.2.tiff
+plot_mean_spawners_sc4.1.tiff
+plot_mean_spawners_sc4.2.tiff
+plot_mean_spawners_sc5.1.tiff
+plot_mean_spawners_sc5.2.tiff
+returner_runs.tiff
