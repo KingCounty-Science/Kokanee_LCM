@@ -8,7 +8,8 @@
 # load relevant packages
 library(tidyverse) #for data minipulation and plotting
 library(ggrepel) # for labeling
-library(patchwork) #for assembling multipanel plots
+library(patchwork) #for assembling multipanel plots\
+libary(ggrepel)
 
 #load mean counts for each returner scenario
 returners_wide <-read_csv("Output/overview_mean_spawners.csv", 
@@ -300,8 +301,8 @@ S21S31A <-returners_long %>%
 
 S21S31A
 
-s21s41B <-returners_long %>%
-  filter(scenario %in%  c("sc2.1", "sc4.1", "B")) %>% 
+s21s42B <-returners_long %>%
+  filter(scenario %in%  c("sc2.1", "sc4.2", "B")) %>% 
   mutate(label = if_else(year == max(year), as.character(scenario), NA_character_)) %>% 
   ggplot(aes(x = year, y = spawners, group = scenario)) +
   geom_line(color = "gray") +
@@ -311,7 +312,7 @@ s21s41B <-returners_long %>%
   geom_text_repel(aes (label=NA),max.overlaps = 15)+
   theme_classic()
 
-s21s41B
+s21s42B
 
 s21s51C <-returners_long %>%
   filter(scenario %in%  c("sc2.1", "sc5.1", "C")) %>% 
@@ -328,7 +329,7 @@ s21s51C
 
 
 
-all_threepanelB <-S21S31A + s21s41B + s21s51C +
+all_threepanelB <-S21S31A + s21s42B + s21s51C +
   plot_annotation(tag_levels = "A") & theme(plot.tag.position = c(.3, 1))
 all_threepanelB
 
@@ -352,35 +353,33 @@ returners_long %>%
   theme_classic()
 
 #change labels combo B
-s21s41B <-returners_long %>%
-  filter(scenario %in%  c("sc2.1", "sc4.1", "B")) %>% 
+s21s42B <-returners_long %>%
+  filter(scenario %in%  c("sc2.1", "sc4.2", "B")) %>% 
   mutate(label = case_when(
-    scenario == "sc2.1" ~ "improve lake survival for hatchery 
-    fry to match natural fry", 
-    scenario == "sc4.1" ~ "Increase natural egg to fry survival by 2%", 
+    scenario == "sc2.1" ~ "Increase hatchery fry to adult survival to 2%", 
+    scenario == "sc4.2" ~ "Increase natural egg to fry survival by 4%", 
     scenario =="B" ~ "2 Actions Combined", 
     TRUE ~ NA_character_)) 
 
 
 #plot Combo B 
-  Combo_B_Plot <- ggplot(s21s41B, aes(x = year, y = spawners, group = scenario)) +
+  Combo_B2_Plot <- ggplot(s21s42B, aes(x = year, y = spawners, group = scenario)) +
     geom_line(color = "gray") +
-    geom_label_repel(data = s21s41B %>% filter(year == max(year)), 
+    geom_label_repel(data = s21s42B %>% filter(year == max(year)), 
                      aes(label = label),
                      nudge_x = 1, nudge_y = -150,
-                     size = 2,
+                     size = 3,
                      na.rm = TRUE) +  # Only show labels for the max year
     theme_classic()
 
-Combo_B_Plot
+Combo_B2_Plot
 
 #change labels combo C
 s21s51C <-returners_long %>%
   filter(scenario %in%  c("sc2.1", "sc5.1", "C")) %>% 
   mutate(label = case_when(
-    scenario == "sc2.1" ~ "improve lake survival for hatchery fry to match natural fry", 
-    scenario == "sc5.1" ~ "Double natural fry 
-    to adult survival", 
+    scenario == "sc2.1" ~ "Increase hatchery fry to adult survival to 2%", 
+    scenario == "sc5.1" ~ "Increase natural fry to adult survival to 4%", 
     scenario =="C" ~ "2 Actions Combined", 
     TRUE ~ NA_character_)) 
 
@@ -390,8 +389,8 @@ Combo_C_Plot <- ggplot(s21s51C, aes(x = year, y = spawners, group = scenario)) +
   geom_label_repel(data = s21s51C %>% filter(year == max(year)), 
                    aes(label = label),
                    nudge_x = 0, 
-                   nudge_y = 200,
-                   size = 2,
+                   nudge_y = 300,
+                   size = 3,
                    na.rm = TRUE) +  # Only show labels for the max year
   theme_classic()
 
@@ -406,3 +405,16 @@ ComboBC
 
 ggsave(plot = ComboBC, filename = "Output/allscenarios_zoom_Bailey.tiff",
        width = 7.5, height = 5, units = "in")
+
+
+#Plot 3.1 with Y-axis max of 1200
+s31_1200 <-returners_long %>%
+  filter(scenario %in%  c("sc3.1")) %>% 
+  mutate(label = if_else(year == max(year), as.character(scenario), NA_character_)) %>% 
+  ggplot(aes(x = year, y = mean_spawners, group = scenario)) +
+  geom_line(color = "gray") +
+  geom_label_repel(aes(label = label),
+                   nudge_x = 1,
+                   na.rm = TRUE) + 
+  theme_classic()
+s31_1200
