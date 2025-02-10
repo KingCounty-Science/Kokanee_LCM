@@ -52,11 +52,6 @@ for(k in 1:length(scenarios)) {
   nat_fry_to_spawn_survival <- .0197 #1.97% geometric mean from jim 2009-2019 updated 6/10/24
   hat_fry_to_spawn_survival <- .0006 #0.06% geometric mean from jim 2009-2019 updated 6/10/24
  
-#sample from list of value compositions that sum to 1. each sample gives a percent of brood that later returned as spawners in different age classes(2yr-5yr). Estimates from Jim Data. updated 7/24/2024. 
-  portion_nat_brood_to_spawn_age <- sample(portion_nat_brood_to_spawn_age_INPUT, 1)
-  #sample from list of value compositions that sum to 1. each sample gives a percent of brood that later returned as spawners in different age classes(2yr-5yr). Estimates from Jim Data. updated 7/24/2024. 
-  portion_hat_brood_to_spawn_age <- sample(portion_hat_brood_to_spawn_age_INPUT, 1)
-  
   portion_spawner_to_hatch = NA
   max_num_spawners = 300
   maximum_spawner_capacity = 22500
@@ -135,6 +130,11 @@ for(k in 1:length(scenarios)) {
       
       ## natural org fish fry to spawn ####
       n_nat_spawner <- n_nat_fry*nat_fry_to_spawn_survival
+      
+      #sample from list of value compositions that sum to 1. each sample gives a percent of brood that later returned as spawners in different age classes(2yr-5yr). Estimates from Jim Data. updated 7/24/2024. 
+      portion_nat_brood_to_spawn_age <- sample(portion_nat_brood_to_spawn_age_INPUT, 1)
+      #sample from list of value compositions that sum to 1. each sample gives a percent of brood that later returned as spawners in different age classes(2yr-5yr). Estimates from Jim Data. updated 7/24/2024. 
+      portion_hat_brood_to_spawn_age <- sample(portion_hat_brood_to_spawn_age_INPUT, 1)
       
       n_nat_year_2_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[[1]][1]
       n_nat_year_3_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[[1]][2]
