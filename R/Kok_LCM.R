@@ -277,6 +277,58 @@ for(k in 1:length(scenarios)) {
   
   dev.off()
   
+  ##Quantile Plot
+  grand_df_plot_filename <- paste0("Output/plot_quantiles_spawners_",scen, ".tiff")
+  tiff(filename = grand_df_plot_filename, width = 7.5, height = 6, units = "in", pointsize = 10, res = 400, family = "sans", compression = "lzw")
+  
+  par(mar = c(5,5,2,12), xpd = TRUE) #add extra space to the right for the legend
+  
+  #plot based on model output range 
+  plot(x = grand_df[5:(years),1],
+       y = rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)], #solid line for mean
+       type = "l",
+       xlab = "years", 
+       ylab = "healthy spawners",
+       ylim = c(0, top_of_range))
+  
+  lines(x = grand_df[5:(years),1],
+        y = apply(grand_df[,-1], 1, median, na.rm = TRUE)[5:(years)],
+        lty = 2) # dashed line for median
+  
+  #2.5 c(0.025,0.25, 0.75, 0.975))
+  lines(x = grand_df[5:(years),1],
+        y = apply(grand_df[,-1], 1, quantile, probs = 0.025, na.rm = TRUE)[5:(years)],
+        col = "#56BFC1",
+        lty = 3) # dotted
+  
+  #97.5thth
+  lines(x = grand_df[5:(years),1],
+        y = apply(grand_df[,-1], 1, quantile, probs = 0.975, na.rm = TRUE)[5:(years)],
+        col = "#56BFC1",
+        lty = 3)
+  
+  #25thth
+  lines(x = grand_df[5:(years),1],
+        y = apply(grand_df[,-1], 1, quantile, probs = 0.25, na.rm = TRUE)[5:(years)],
+        col = "#C8B7F3",
+        lty = 1342)
+  
+  #75thth
+  lines(x = grand_df[5:(years),1],
+        y = apply(grand_df[,-1], 1, quantile, probs = 0.75, na.rm = TRUE)[5:(years)],
+        col = "#C8B7F3",
+        lty = 1342)
+  
+  legend(x = "topright",
+         inset=c(-.35, .25),
+         bty="n",
+         legend = c("mean", "median", "2.5% and 97.5%", "25% and 75%"),
+         lty = c(1,2,3,1342),
+         col = c("black", "black", "#56BFC1", "#C8B7F3"))
+  
+  dev.off()
+  ## end quantiles plot
+  
   #save the grand_df
   grand_df_filename <- paste0("Output/mean_spawners_",scen, ".csv")
   write.csv(grand_df, grand_df_filename)
