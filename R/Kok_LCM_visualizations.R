@@ -9,7 +9,7 @@
 library(tidyverse) #for data minipulation and plotting
 library(ggrepel) # for labeling
 library(patchwork) #for assembling multipanel plots\
-libary(ggrepel)
+library(ggrepel)
 
 #load mean counts for each returner scenario
 returners_wide <-read_csv("Output/overview_mean_spawners.csv", 
@@ -61,9 +61,6 @@ returners_sd_long <- returners_sd_wide %>%
 returner_mids_long <-full_join(returners_long,returners_median_long, by = c("year", "scenario"))
 returner_stats_long<- full_join(returner_mids_long, returners_sd_long, by = c("year", "scenario"))
 
-#calculate the upper and lower bounds of the 95% CI using the sd - showing 2 standard deviations above and below mean
-returner_stats_long$lowerCI <- returner_stats_long$mean_spawners - 2*returner_stats_long$sd_spawners
-returner_stats_long$upperCI <- returner_stats_long$mean_spawners + 2*returner_stats_long$sd_spawners
 
 
 ## Plot for October 2024 Kokanee release poster ####
@@ -82,47 +79,6 @@ ggplot(data = returner25, aes(x = year, y = mean_spawners, group = scenario)) +
 
 ggsave(filename = "Output/Kok_release_1_B_C.tiff", width = 6, height = 6, units = "in")
 
-### Just 1.0 ####
-returner25 %>% filter(scenario == "sc1.0") %>% 
-  ggplot(aes(x = year, y = mean_spawners, group = scenario)) +
-  geom_text(aes(label = label),
-            nudge_x = 1,
-            na.rm = TRUE) + 
-  geom_line(color = "black") +
-  geom_line(data = returner25 %>% filter(scenario == "sc1.0"), aes(x = year, y = lowerCI), linetype = 2)+ 
-  geom_line(data = returner25%>% filter(scenario == "sc1.0"), aes(x = year, y = upperCI), linetype = 2)+
-  scale_y_continuous(limits = c(0, 6500), breaks = c(0,1000, 2000, 3000, 4000, 5000, 6000)) +
-  theme_classic()
-
-ggsave(filename = "Output/Kok_release_1.0.tiff", width = 6, height = 6, units = "in")
-
-### Just C ####
-returner25 %>% filter(scenario == "C") %>% 
-  ggplot(aes(x = year, y = mean_spawners, group = scenario)) +
-  geom_text(aes(label = label),
-            nudge_x = 1,
-            na.rm = TRUE) + 
-  geom_line(color = "black") +
-  geom_line(data = returner25 %>% filter(scenario == "C"), aes(x = year, y = lowerCI), linetype = 2)+ 
-  geom_line(data = returner25%>% filter(scenario == "C"), aes(x = year, y = upperCI), linetype = 2)+
-  scale_y_continuous(limits = c(0, 6500), breaks = c(0,1000, 2000, 3000, 4000, 5000, 6000)) +
-  theme_classic()
-
-ggsave(filename = "Output/Kok_release_C.tiff", width = 6, height = 6, units = "in")
-
-### Just B ####
-returner25 %>% filter(scenario == "B") %>% 
-  ggplot(aes(x = year, y = mean_spawners, group = scenario)) +
-  geom_text(aes(label = label),
-            nudge_x = 1,
-            na.rm = TRUE) + 
-  geom_line(color = "black") +
-  geom_line(data = returner25 %>% filter(scenario == "B"), aes(x = year, y = lowerCI), linetype = 2)+ 
-  geom_line(data = returner25%>% filter(scenario == "B"), aes(x = year, y = upperCI), linetype = 2)+
-  scale_y_continuous(limits = c(0, 6500), breaks = c(0,1000, 2000, 3000, 4000, 5000, 6000)) +
-  theme_classic()
-
-ggsave(filename = "Output/Kok_release_B.tiff", width = 6, height = 6, units = "in")
 
 ### Histogram for scenarios demonstrating population at end of run. ####
 sc01 <-read_csv("output/mean_spawners_sc1.0.csv")
@@ -399,7 +355,7 @@ Combo_C_Plot
 
 custom_tags <- c("i", "ii")
 
-ComboBC <-Combo_B_Plot + Combo_C_Plot +
+ComboBC <-Combo_B2_Plot + Combo_C_Plot +
   plot_annotation(tag_levels = custom_tags) & theme(plot.tag.position = c(.3, 1))
 ComboBC
 
@@ -418,3 +374,4 @@ s31_1200 <-returners_long %>%
                    na.rm = TRUE) + 
   theme_classic()
 s31_1200
+
