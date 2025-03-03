@@ -49,8 +49,8 @@ for(k in 1:length(scenarios)) {
   nat_egg_surv_max <- 0.176 #upper bound of 95% CI #0.176
   n_nat_eggs_start <- 120000 #Estimate for how many eggs are available with 300 spawners
   n_hat_eggs_start <- 7500
-  nat_fry_to_spawn_survival <- .0197 #1.97% geometric mean from jim 2009-2019 updated 6/10/24
-  hat_fry_to_spawn_survival <- .0006 #0.06% geometric mean from jim 2009-2019 updated 6/10/24
+  nat_fry_to_adult_survival <- .0197 #1.97% geometric mean from jim 2009-2019 updated 6/10/24
+  hat_fry_to_adult_survival <- .0006 #0.06% geometric mean from jim 2009-2019 updated 6/10/24
  
   portion_spawner_to_hatch = NA
   max_num_spawners = 300
@@ -65,13 +65,13 @@ for(k in 1:length(scenarios)) {
   
   ## alterations due to scenarios ####
   if (scen == "sc2.1" | scen == "A" | scen == "B" | scen == "C"  ) {
-    hat_fry_to_spawn_survival <- nat_fry_to_spawn_survival #as the numeric value for hatchery-only fry to adult survival (show improved lake survival rate for hatchery fry : adult equal to natural fry : adult survival rate). 
+    hat_fry_to_adult_survival <- nat_fry_to_adult_survival #as the numeric value for hatchery-only fry to adult survival (show improved lake survival rate for hatchery fry : adult equal to natural fry : adult survival rate). 
   } 
   if (scen == "sc2.2"){
-    hat_fry_to_spawn_survival <- nat_fry_to_spawn_survival*.5 # the as the numeric value for hatchery-only fry to adult survival (show improved lake survival rate for hatchery fry : adult half the natural fry : adult survival rate). 
+    hat_fry_to_adult_survival <- nat_fry_to_adult_survival*.5 # the as the numeric value for hatchery-only fry to adult survival (show improved lake survival rate for hatchery fry : adult half the natural fry : adult survival rate). 
   }   
   if (scen == "sc2.3"){
-    hat_fry_to_spawn_survival <- nat_fry_to_spawn_survival*2 # the as the numeric value for hatchery-only fry to adult survival (show improved lake survival rate for hatchery fry : adult double the natural fry : adult survival rate). 
+    hat_fry_to_adult_survival <- nat_fry_to_adult_survival*2 # the as the numeric value for hatchery-only fry to adult survival (show improved lake survival rate for hatchery fry : adult double the natural fry : adult survival rate). 
   } 
   if (scen == "sc3.1"| scen == "A" | scen == "D"| scen == "E"  ){
     portion_spawner_to_hatch_low_year_list <- portion_spawner_to_hatch_low_year_list*2 # double values in the list compared to sc1.0; keep zero
@@ -90,10 +90,10 @@ for(k in 1:length(scenarios)) {
     nat_egg_surv_max <- nat_egg_surv_max + 0.04 #increase survival by + 4%
   }
   if (scen == "sc5.1"| scen == "C"| scen == "E" | scen == "F" ){
-    nat_fry_to_spawn_survival <- nat_fry_to_spawn_survival*2 #doubling status quo natural fry to adult survival
+    nat_fry_to_adult_survival <- nat_fry_to_adult_survival*2 #doubling status quo natural fry to adult survival
   }
   if (scen == "sc5.2"){
-    nat_fry_to_spawn_survival <- nat_fry_to_spawn_survival*3 #triple status quo natural fry to adult survival
+    nat_fry_to_adult_survival <- nat_fry_to_adult_survival*3 #triple status quo natural fry to adult survival
   }
   
   grand_df <- matrix(data = NA, nrow = years+4, ncol = runs+1) #because outputs are placed 2-5 years into the future, the loop needs to extend 4 years past the desired length so future predictions have a location on the matrix to go. Without these extra rows the model gets an error towards the last year.
@@ -129,17 +129,17 @@ for(k in 1:length(scenarios)) {
       #fry to lake survival to transition to spawner by ages ####
       
       ## natural org fish fry to spawn ####
-      n_nat_spawner <- n_nat_fry*nat_fry_to_spawn_survival
+      n_nat_adult <- n_nat_fry*nat_fry_to_adult_survival
       
       #sample from list of value compositions that sum to 1. each sample gives a percent of brood that later returned as spawners in different age classes(2yr-5yr). Estimates from Jim Data. updated 7/24/2024. 
       portion_nat_brood_to_spawn_age <- sample(portion_nat_brood_to_spawn_age_INPUT, 1)
       #sample from list of value compositions that sum to 1. each sample gives a percent of brood that later returned as spawners in different age classes(2yr-5yr). Estimates from Jim Data. updated 7/24/2024. 
       portion_hat_brood_to_spawn_age <- sample(portion_hat_brood_to_spawn_age_INPUT, 1)
       
-      n_nat_year_2_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[[1]][1]
-      n_nat_year_3_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[[1]][2]
-      n_nat_year_4_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[[1]][3]
-      n_nat_year_5_spawners<-n_nat_spawner*portion_nat_brood_to_spawn_age[[1]][4]
+      n_nat_year_2_spawners<-n_nat_adult*portion_nat_brood_to_spawn_age[[1]][1]
+      n_nat_year_3_spawners<-n_nat_adult*portion_nat_brood_to_spawn_age[[1]][2]
+      n_nat_year_4_spawners<-n_nat_adult*portion_nat_brood_to_spawn_age[[1]][3]
+      n_nat_year_5_spawners<-n_nat_adult*portion_nat_brood_to_spawn_age[[1]][4]
       
       nat_df[i,"year"] <- i
       nat_df[i+1,"2yo"] <- n_nat_year_2_spawners
@@ -149,12 +149,12 @@ for(k in 1:length(scenarios)) {
       nat_df[i,"sum_spawn_rets"] <- sum(nat_df[i,2:5], na.rm = TRUE)
       
       ## hatchery fish fry to spawn ####
-      n_hat_spawner <- n_hat_fry*hat_fry_to_spawn_survival
+      n_hat_adult <- n_hat_fry*hat_fry_to_adult_survival
       
-      n_hat_year_2_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[[1]][1]
-      n_hat_year_3_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[[1]][2]
-      n_hat_year_4_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[[1]][3]
-      n_hat_year_5_spawners<-n_hat_spawner*portion_hat_brood_to_spawn_age[[1]][4]
+      n_hat_year_2_spawners<-n_hat_adult*portion_hat_brood_to_spawn_age[[1]][1]
+      n_hat_year_3_spawners<-n_hat_adult*portion_hat_brood_to_spawn_age[[1]][2]
+      n_hat_year_4_spawners<-n_hat_adult*portion_hat_brood_to_spawn_age[[1]][3]
+      n_hat_year_5_spawners<-n_hat_adult*portion_hat_brood_to_spawn_age[[1]][4]
       
       hat_df[i,"year"] <- i
       hat_df[i+1,"2yo"] <- n_hat_year_2_spawners
