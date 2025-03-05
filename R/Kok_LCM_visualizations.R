@@ -319,7 +319,7 @@ s21s42B <-returners_long %>%
 
 
 #plot Combo B 
-  Combo_B2_Plot <- ggplot(s21s42B, aes(x = year, y = spawners, group = scenario)) +
+  Combo_B_Plot <- ggplot(s21s42B, aes(x = year, y = spawners, group = scenario)) +
     geom_line(color = "gray") +
     geom_label_repel(data = s21s42B %>% filter(year == max(year)), 
                      aes(label = label),
@@ -328,7 +328,7 @@ s21s42B <-returners_long %>%
                      na.rm = TRUE) +  # Only show labels for the max year
     theme_classic()
 
-Combo_B2_Plot
+Combo_B_Plot
 
 #change labels combo C
 s21s51C <-returners_long %>%
@@ -355,7 +355,7 @@ Combo_C_Plot
 
 custom_tags <- c("i", "ii")
 
-ComboBC <-Combo_B2_Plot + Combo_C_Plot +
+ComboBC <-Combo_B_Plot + Combo_C_Plot +
   plot_annotation(tag_levels = custom_tags) & theme(plot.tag.position = c(.3, 1))
 ComboBC
 
