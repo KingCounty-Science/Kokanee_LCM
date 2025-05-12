@@ -65,7 +65,7 @@ returner_stats_long<- full_join(returner_mids_long, returners_sd_long, by = c("y
 
 ## Plot for October 2024 Kokanee release poster ####
 returner25 <-returner_stats_long %>% 
-  filter(year < 25) %>% 
+  filter(year <= 25) %>% 
   mutate(label = if_else(year == max(year), as.character(scenario), NA_character_)) %>% 
   filter(scenario %in% c("sc1.0", "B", "C")) 
 
@@ -375,3 +375,34 @@ s31_1200 <-returners_long %>%
   theme_classic()
 s31_1200
 
+## Data Lab LSSG May 2025 # Data visualization example ####
+## Using the histogram and the quantile plots side by side
+fablab.plot1<-hist_plot(scC) + theme(text=element_text(size=20))
+
+fablab.plot2<-scC %>% 
+  filter(V1 %in% c(5:25)) %>% 
+  select(V1:V1001) %>% 
+  pivot_longer(!V1, names_to = "run", values_to = "mean_spawners") %>% 
+  group_by(V1) %>% 
+  reframe(spawners = quantile(mean_spawners, 
+                              c(0.025,0.25, 0.75, 0.975)), 
+          quantile = c("2.5%", "25%", "75%", "97.5%"))  %>% 
+  ggplot(aes(x = V1, y = spawners, color = quantile)) +
+  geom_line() +
+  scale_color_manual(values=c("#DFABAB",  "#4DD0E1", "#4DD0E1",  "#DFABAB")) +
+  geom_line(data = returner25 %>% filter(scenario == "C"), aes(x = year, y = mean_spawners, linetype = "mean"), color = "black") +
+  geom_line(data = returner25 %>% filter(scenario == "C"), aes(x = year, y = median_spawners, linetype = "median"), color = "black") +
+  xlab("year") +
+  scale_y_continuous(limits = c(0, 20000), breaks = c(0,5000, 10000, 15000, 20000)) +
+  theme_classic() +
+  guides(
+    linetype = guide_legend(
+      title = "",
+      override.aes = list(linetype = c(1,2)))
+    ) + theme(text=element_text(size=20))
+
+fablab<-fablab.plot1 + fablab.plot2 + 
+  plot_annotation(tag_levels = 'A') 
+
+ggsave(plot = fablab, filename = "Output/LSSGDataLab_scenarioC.tiff",
+       width = 12, height = 6.5, units = "in")
