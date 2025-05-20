@@ -1,12 +1,12 @@
 #=== === === === === === === ===
 # Script started by Rebekah Stiling, Bailey Keeler, and Jim Bower July 2024
-# This creates additional figures and visualizations by resusing the scnario output csv files.
+# This creates additional figures and visualizations by reusing the scenario output csv files.
 # rstiling@kingcounty.gov, bkeeler@kingcounty.gov
 #=== === === === === === === ===
 
 ##transition to using ggplot
 # load relevant packages
-library(tidyverse) #for data minipulation and plotting
+library(tidyverse) #for data manipulation and plotting
 library(ggrepel) # for labeling
 library(patchwork) #for assembling multipanel plots\
 library(ggrepel)
@@ -219,7 +219,7 @@ p3 <-returners_long %>%
 p3
 
 all_threepanel <-p1 + p2 + p3 +
-  plot_annotation(tag_levels = 'A') & theme(plot.tag.position = c(0.1, 1))
+  plot_annotation(tag_levels = 'a') & theme(plot.tag.position = c(0.05, 1))
 
 ggsave(plot = all_threepanel, filename = "Output/allscenarios_zoom.tiff",
        width = 7.5, height = 5, units = "in")
