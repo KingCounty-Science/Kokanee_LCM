@@ -17,6 +17,7 @@ Plots and csv files from each scenario. Visualizations for communications and ev
 File naming convention:
 - "mean_spawners_[scenario name].csv" : output data of the number of returners for each year for each of the runs.
 - "plot_mean_spawners_[scenario name].tiff" : plot of the number of returners for each year for each of the runs with a solid mean and dashed median line.
+- "plot_quantile_spawners_[scenario name].tiff" : plots with a solid mean and dashed median line alongside dottent 2.5, 25, 75, and 97.5 percentiles.
 - "allscenarios_zoom.tiff" : mean outcome from all runs, zoomed in a little more each panel to see additional detail in low numbers.
 - "Kok_release_[scenario].tiff : visualizations for kokanee release poster
-- "overview_[stat]_spawners.csv : files with the population mean, median, and sd for each year of the model for each scenario
+- "overview_[stat]_spawners.csv : files with the population mean, median, and sd for each year of the model for each scenario. The sd data frames were never used, rather confidence intervals were calculated with quantiles, calculating a 95% confidence interval with the 2.5-97.5 percentiles.
