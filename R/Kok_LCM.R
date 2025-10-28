@@ -1,6 +1,6 @@
 #=== === === === === === === ===
 # Script started by Rebekah Stiling, Bailey Keeler, and Jim Bower Spring 2024
-# This is the Kokanee lifecycle model it goes through a status quo cycle then builds on that with addtional scenarios informed by managment goals
+# This is the Kokanee lifecycle model it goes through a status quo cycle then builds on that with additional scenarios informed by management goals
 # rstiling@kingcounty.gov, bkeeler@kingcounty.gov
 #=== === === === === === === ===
 
@@ -33,12 +33,6 @@ returner_df[,1] <- 1:years #populate the first column of the df with the number 
 returner_df_median <- matrix(data = NA, nrow = years, ncol = length(scenarios)+1) #this is for storing the average output of each scenario, the +1 allows for a col named "years"
 colnames(returner_df_median) <- c("year",scenarios) #name the columns
 returner_df_median[,1] <- 1:years #populate the first column of the df with the number of years, plus
-
-#create a data frame that will store all the returner numbers as the standard deviation for calculating 95% confidence interval
-returner_df_sd <- matrix(data = NA, nrow = years, ncol = length(scenarios)+1) #this is for storing the average output of each scenario, the +1 allows for a col named "years"
-colnames(returner_df_sd) <- c("year",scenarios) #name the columns
-returner_df_sd[,1] <- 1:years #populate the first column of the df with the number of years, plus
-
 
 for(k in 1:length(scenarios)) {
   scen <- scenarios[k]
@@ -242,7 +236,7 @@ for(k in 1:length(scenarios)) {
     } 
     
     
-  }  #end j loop (last run of that scenario completed)
+  }  #end j loop (last iteration of that scenario completed)
   
   lines(x = grand_df[5:(years),1],
         y = rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)])
@@ -251,7 +245,7 @@ for(k in 1:length(scenarios)) {
   top_of_range <- max(grand_df, na.rm = TRUE)
   
   grand_df_plot_filename <- paste0("Output/plot_mean_spawners_",scen, ".tiff")
-  tiff(filename = grand_df_plot_filename, width = 6, height = 6, units = "in", pointsize = 10, res = 400, family = "sans", compression = "lzw")
+  tiff(filename = grand_df_plot_filename, width = 6.5, height = 5.5, units = "in", pointsize = 10, res = 400, family = "sans", compression = "lzw")
   
   par(mar = c(5,5,2,2))
   
@@ -279,51 +273,58 @@ for(k in 1:length(scenarios)) {
   
   ##Quantile Plot
   grand_df_plot_filename <- paste0("Output/plot_quantiles_spawners_",scen, ".tiff")
-  tiff(filename = grand_df_plot_filename, width = 7.5, height = 6, units = "in", pointsize = 10, res = 400, family = "sans", compression = "lzw")
+  tiff(filename = grand_df_plot_filename, width = 6.5, height = 5.5, units = "in", pointsize = 10, res = 400, family = "sans", compression = "lzw")
   
-  par(mar = c(5,5,2,12), xpd = TRUE) #add extra space to the right for the legend
+  par(mar = c(5,5,2,2)) 
   
   #plot based on model output range 
   plot(x = grand_df[5:(years),1],
        y = rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)], #solid line for mean
        type = "l",
+       lwd = 2.0, #weight
        xlab = "years", 
        ylab = "healthy spawners",
        ylim = c(0, top_of_range))
   
   lines(x = grand_df[5:(years),1],
         y = apply(grand_df[,-1], 1, median, na.rm = TRUE)[5:(years)],
-        lty = 2) # dashed line for median
+        lty = 2, # dashed line for median
+        lwd = 2.0) #line weight
   
-  #2.5 c(0.025,0.25, 0.75, 0.975))
+  #5th c(0.025,0.25, 0.75, 0.975))
   lines(x = grand_df[5:(years),1],
-        y = apply(grand_df[,-1], 1, quantile, probs = 0.025, na.rm = TRUE)[5:(years)],
+        y = apply(grand_df[,-1], 1, quantile, probs = 0.05, na.rm = TRUE)[5:(years)],
         col = "#56BFC1",
-        lty = 3) # dotted
+        lty = 3, #dotted
+        lwd = 2.0) #line weight
   
-  #97.5thth
+  #95thth
   lines(x = grand_df[5:(years),1],
-        y = apply(grand_df[,-1], 1, quantile, probs = 0.975, na.rm = TRUE)[5:(years)],
+        y = apply(grand_df[,-1], 1, quantile, probs = 0.95, na.rm = TRUE)[5:(years)],
         col = "#56BFC1",
-        lty = 3)
+        lty = 3,
+        lwd = 2.0) #line weight
   
   #25thth
   lines(x = grand_df[5:(years),1],
         y = apply(grand_df[,-1], 1, quantile, probs = 0.25, na.rm = TRUE)[5:(years)],
         col = "#C8B7F3",
-        lty = 1342)
+        lty = 1342,
+        lwd = 2.0) #line weight
   
   #75thth
   lines(x = grand_df[5:(years),1],
         y = apply(grand_df[,-1], 1, quantile, probs = 0.75, na.rm = TRUE)[5:(years)],
         col = "#C8B7F3",
-        lty = 1342)
+        lty = 1342,
+        lwd = 2.0) #line weight
   
-  legend(x = "topright",
-         inset=c(-.35, .25),
+  legend(x = "topleft",
+         inset=c(.05, .05),
          bty="n",
-         legend = c("mean", "median", "2.5% and 97.5%", "25% and 75%"),
+         legend = c("mean", "median", "5% and 95%", "25% and 75%"),
          lty = c(1,2,3,1342),
+         lwd = 2.0,
          col = c("black", "black", "#56BFC1", "#C8B7F3"))
   
   dev.off()
@@ -335,7 +336,6 @@ for(k in 1:length(scenarios)) {
   
   returner_df[5:(years),k+1] <- rowMeans(grand_df[,-1], na.rm = TRUE)[5:(years)]
   returner_df_median[5:(years),k+1] <- apply(grand_df[,-1], 1, median, na.rm = TRUE)[5:(years)]
-  returner_df_sd[5:(years),k+1] <- apply(grand_df[,-1], 1, sd, na.rm = TRUE)[5:(years)]
   
 } #end k loop (last scenario completed)
 
@@ -347,14 +347,10 @@ write.csv(returner_df, returner_df_filename)
 returner_df_median_filename <- paste0("Output/overview_median_spawners.csv")
 write.csv(returner_df_median, returner_df_median_filename)
 
-#save the returner_df_sd
-returner_df_sd_filename <- paste0("Output/overview_sd_spawners.csv")
-write.csv(returner_df_sd, returner_df_sd_filename)
-
 #establish top of range in data fram from model output 
 top_of_range_returner <- max(returner_df, na.rm = TRUE)
 
-tiff(filename = "Output/returner_runs.tiff", width = 6, height = 6, units = "in", pointsize = 10, res = 400, family = "sans", compression = "lzw")
+tiff(filename = "Output/returner_runs.tiff", width = 6.5, height = 5.5, units = "in", pointsize = 10, res = 400, family = "sans", compression = "lzw")
 
 par(mar = c(5,5,2,2))
 
