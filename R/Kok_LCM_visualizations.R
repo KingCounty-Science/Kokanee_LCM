@@ -222,7 +222,7 @@ all_threepanel <-p1 + p2 + p3 +
   plot_annotation(tag_levels = 'a') & theme(plot.tag.position = c(0.05, 1))
 
 ggsave(plot = all_threepanel, filename = "Output/allscenarios_zoom.tiff",
-       width = 7.5, height = 5, units = "in")
+       width = 6.5, height = 4.5, units = "in")
 
 
 #Bailey uses Beka code to compare scenarios with their combos ####
